@@ -1,0 +1,28 @@
+.user-info{
+    width : 85vw;
+    height : 6%;
+    background-color: blueviolet;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+}
+
+.user-icon{
+    width : 45px;
+    height : 45px;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px; 
+    font-size: 25px;
+    background-color: orange;
+    color: rgb(30,30,30);
+
+}
+
+.user-name{
+    margin-left : 20px;
+    font-weight: 700;
+    font-size: larger;
+}
