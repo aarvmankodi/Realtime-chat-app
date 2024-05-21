@@ -1,6 +1,6 @@
 # Realtime Chat Application
 
-Zidio Development Project 2 
-Made by :
-    Aarv Mankodi
-    Aryan Jain
+Zidio Development Project 2 <br>
+Made by :<br>
+    Aarv Mankodi <br>
+    Aryan Jain <br>
