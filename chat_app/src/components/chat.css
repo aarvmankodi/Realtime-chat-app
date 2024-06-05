@@ -4,3 +4,20 @@
     margin-left:15vw;
     background-color: aqua;
 }
+
+ul{
+    list-style: none;
+}
+.chat-messages{
+    background-color: black;
+    color : white;
+    width:fit-content;
+    padding : 10px;
+    max-width : 50%;
+    padding-top : 5px;
+    padding-bottom: 5px;
+    
+    word-wrap:break-word;
+    margin-top : 10px;
+    border-radius : 10px;
+}
