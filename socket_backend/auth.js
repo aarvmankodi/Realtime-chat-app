@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session');
 const cors = require('cors');
 const { connectToDb } = require('./db-conn');
 const bcrypt = require('bcrypt');
@@ -61,13 +62,21 @@ router.post('/login', async (req, res) => {
     
         try {
             if ( form === 'users'){
-                const user = await User.findOne({ email });
+                const user = await User.findOne({ email }).populate('contacts');
     
             if (user) {
                 const isPasswordValid = await bcrypt.compare(password, user.password);
-                if (isPasswordValid)
-                    res.status(200).json({ message: 'Login successful' });
-                else
+                if (isPasswordValid){
+                   
+
+                    req.session.user = {
+                        id : user._id, 
+                        email : user.email,
+                        contacts : user.contacts
+                    }
+
+                    res.status(200).json({ message: 'Login successful', session : req.session });
+                }else
                 res.status(201).json({ error: 'Invalid credentials' });
             } else {
                 res.status(404).json({ error: 'User Not Found' });
@@ -80,6 +89,7 @@ router.post('/login', async (req, res) => {
         }
     
 });
+
 
 module.exports = router;
 

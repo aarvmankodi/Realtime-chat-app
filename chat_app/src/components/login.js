@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import axios from 'axios';
 import './login.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -22,7 +22,7 @@ function Login() {
     }));
   };
 
-
+  const [contacts , setContacts] = useState([]);
 
   
 
@@ -35,7 +35,9 @@ function Login() {
         if (response.status === 200) {
           // If login is successful, display a success message to the user
           document.cookie = "loginStatus=success; expires=Thu, 18 Dec 2025 12:00:00 UTC; path=/";
-          navigate("/");
+          console.log(response);
+          navigate("/chats");
+       
           toast("loggeed in")
           // You can redirect the user to another page here if needed
         } else {

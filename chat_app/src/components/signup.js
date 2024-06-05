@@ -32,7 +32,7 @@ function SignUp() {
    
     
      if (action === 'SignUp'){
-      navigate("/login");
+      navigate("/");
 
       
     }

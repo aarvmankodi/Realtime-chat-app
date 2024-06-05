@@ -9,7 +9,7 @@ export default function Main() {
   useEffect(() => {
     const loginStatus = getCookie("loginStatus");
     if (loginStatus !== "success") {
-      navigate("/login");
+      navigate("/");
     }
   }, [navigate]);
 
