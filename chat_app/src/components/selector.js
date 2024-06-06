@@ -42,13 +42,19 @@ export default function Selector() {
     useEffect (() => {
         const fetchData = async() => {
             try{
-                const responce = await axios.get('http://localhost:3001/user/contacts');
-                setContacts(responce.data);
+                const responce = await axios.get('http://localhost:3001/user/contacts' , {withCredentials : true});
+                // console.log(responce.data.contacts);
+                const newContacts = responce.data.contacts;
+                if ( contacts!== newContacts){
+                    setContacts(newContacts);}
+
+
             }catch (e) {
                 console.log(e);
             }
         }
-    })
+        fetchData();
+    }, [contacts]);
 
     const addContact = async() => {
         let data = prompt("enter name");
@@ -56,7 +62,7 @@ export default function Selector() {
         try{
             await axios.post('http://localhost:3001/user/contacts/add', {
             newData: data
-            }); console.log("added");
+            }, {withCredentials : true}); console.log("added");
         } catch (e){console.log(e)}
 
     }
@@ -69,7 +75,7 @@ export default function Selector() {
             
             <div className='users'>
                 {contacts.map(contact => (
-                    <div className="user">
+                    <div className="user" key={Math.random()}>
                     {contact}
                     </div>
                     
