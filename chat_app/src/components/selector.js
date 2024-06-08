@@ -3,6 +3,8 @@ import './selector.css';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faU, faUser } from '@fortawesome/free-solid-svg-icons'
+import { toast } from 'react-toastify'; 
+
 
 export default function Selector() {
     // const users = [
@@ -54,16 +56,27 @@ export default function Selector() {
             }
         }
         fetchData();
-    }, [contacts]);
+    }, []);
 
     const addContact = async() => {
         let data = prompt("enter name");
         console.log(data);
         try{
-            await axios.post('http://localhost:3001/user/contacts/add', {
+            const responce = await axios.post('http://localhost:3001/user/contacts/add', {
             newData: data
-            }, {withCredentials : true}); console.log("added");
-        } catch (e){console.log(e)}
+            }, {withCredentials : true}); 
+            if (responce.status === 201){
+                toast.success("user added");
+                console.log(responce);
+            } else if (responce.status === 202) {
+                toast.error("user dont exist");
+                console.log("no user");
+                console.log(responce);
+            } else if (responce.status === 203){
+                toast.error("user already added");
+                
+            }
+        } catch (e){console.log(e);}
 
     }
     return (

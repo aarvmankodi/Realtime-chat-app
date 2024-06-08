@@ -4,7 +4,7 @@ const cors = require('cors');
 const { connectToDb } = require('./db-conn');
 const bcrypt = require('bcrypt');
 const mongoose = require("mongoose");
-const User = require("./User");
+const User = require("./schemas/User");
 
 const router = express.Router();
 router.use(cors({

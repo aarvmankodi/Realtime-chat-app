@@ -37,12 +37,13 @@ function Login() {
           console.log(response.data);
           navigate("/chats");
           toast("loggeed in")
-        } else {
+        } else  {
           toast('User not Found');
         }
       } catch (error) {
         console.error('Error during login:', error);
         toast('Error while loggin in');
+        
       }
     }
     
@@ -54,6 +55,7 @@ function Login() {
     e.preventDefault();
     if (action === 'Login'){
       navigate("/signUp");
+      
     }
   };
   

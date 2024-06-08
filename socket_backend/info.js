@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require("mongoose");
 const cors = require('cors');
+const User = require("./schemas/User");
+
 
 const info = express.Router();
 
@@ -11,34 +13,46 @@ info.use(cors({
 }));
 info.use(express.json());
 
-info.get('/user/contacts', (req, res) => {
+info.get('/user/contacts', async (req, res) => {
     if (req.session.user){
-        // console.log(req.session)
+        const RealUser = await User.findOne({email : req.session.user.email});
+        console.log(RealUser.contacts);
+        console.log("req time");
+        req.session.user.contacts = RealUser.contacts;        
         res.status(200).json({ contacts: req.session.user.contacts });
     } else {
-        // console.log(req.session)
+        
         console.log("user dont exist");
         res.status(201).json({ error: 'Not authenticated' });
     }
 });
 
 info.post('/user/contacts/add', async (req,res) => {
-    // console.log(req.session);
+    ;
     try
         {
-        const useremail = req.session.user.email;
+        const newUserEmail = req.body.newData;
+        const userEmail = req.session.user.email;
             
 
-        const User = require("./User");
-        const user = await User.findOne({email : useremail});
-
+        const user = await User.findOne({email : userEmail});
+        const newUser = await User.findOne({email : newUserEmail});
+        
         if (user){
-            user.contacts.push(req.body.newData);
-            req.session.user.contacts.push(req.body.newData);
-        await user.save(); 
-        req.session.save();
-        console.log(req.session.user);
-        res.status(201).json({ message: req.body.newData , also : 'Data added successfully' });
+            if (newUser ){
+                if (user.contacts.includes(newUser.name) || user.email === newUser.email){
+                    return res.status(203).json({message : 'User is already in contacts'});
+                } else {
+                    user.contacts.push(newUser.name);
+                    req.session.user.contacts.push(newUser.name);
+                    await user.save(); 
+                    req.session.save();
+                    console.log(req.session.user);
+                    res.status(201).json({ message:'Data added successfully' });
+                }
+            } else {
+                res.status(202).json({message : 'The user you are trying to add does not exist'});
+            }
         }
     } catch (e){
         console.error('Error adding data:', e);

@@ -4,7 +4,7 @@ const session = require('express-session');
 const { connectToDb , getDb} = require('./db-conn');
 const authenticationRoutes= require('./auth');
 const infoRoutes = require('./info');
-const User = require("./User");
+const User = require("./schemas/User");
 const bcrypt = require('bcrypt');
 const MongoStore = require('connect-mongo');
 
