@@ -16,13 +16,13 @@ const io = socketIo(server, {
 });
 
 app.use(cors({
-  origin: "http://localhost:3000"
+  origin: "http://localhost:3000"   
 }));
 
 
 io.on("connection" , (socket) => {
-  console.log("New user added", socket.id);
 
+  
   socket.on('registerSocket', async () => {
     const db = getDb();
     const users = db.collection('users');

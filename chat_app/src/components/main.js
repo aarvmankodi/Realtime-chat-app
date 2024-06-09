@@ -1,11 +1,11 @@
-import React ,{ useEffect }from 'react';
+import React ,{ useEffect , useState }from 'react';
 import Selector from './selector';
 import Chat from './Chat';
 import { useNavigate } from 'react-router-dom';
 
 export default function Main() {
   const navigate = useNavigate();
-  
+  const [selectedChat, setSelectedChat] = useState(null);
   useEffect(() => {
     const loginStatus = getCookie("loginStatus");
     if (loginStatus !== "success") {
@@ -23,10 +23,13 @@ export default function Main() {
     }
     return "";
   };
+
+  
+
   return (
     <>
-    <Selector/>
-    <Chat />
+    <Selector setSelectedChat={setSelectedChat} />
+    <Chat selectedChat={selectedChat} />
     </>
   )
 }

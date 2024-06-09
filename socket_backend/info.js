@@ -1,15 +1,15 @@
 const express = require('express');
 const mongoose = require("mongoose");
 const cors = require('cors');
-const User = require("./schemas/User");
+const User = require("./person");
+const Message = require("./schemas/Message");
 
 
 const info = express.Router();
 
-
 info.use(cors({
-    origin: 'http://localhost:3000', // Your frontend URL
-    credentials: true // Allow credentials to be sent
+    origin: 'http://localhost:3000',
+    credentials: true 
 }));
 info.use(express.json());
 
@@ -18,7 +18,9 @@ info.get('/user/contacts', async (req, res) => {
         const RealUser = await User.findOne({email : req.session.user.email});
         console.log(RealUser.contacts);
         console.log("req time");
-        req.session.user.contacts = RealUser.contacts;        
+        req.session.user.contacts = RealUser.contacts;
+        console.log("this is totally the one"); 
+        console.log(req.session.user.contacts);       
         res.status(200).json({ contacts: req.session.user.contacts });
     } else {
         
@@ -56,9 +58,15 @@ info.post('/user/contacts/add', async (req,res) => {
         }
     } catch (e){
         console.error('Error adding data:', e);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+        res.status(500).json({ error: 'Something went wrong' });
+    } 
 })
 
-
+info.get('/getCurrentUser', (req, res) => {
+    if (req.session && req.session.user) {
+      res.json({ username: req.session.user.name });
+    } else {
+      res.status(401).send('User not authenticated');
+    }
+  });
 module.exports = info;

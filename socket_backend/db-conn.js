@@ -5,7 +5,7 @@ const connectToDb = (callback) => {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
-    .then(() => {
+    .then((client) => {
         console.log('Database connected successfully');
         callback();
     })

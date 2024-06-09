@@ -5,58 +5,39 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faU, faUser } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'; 
 
-
-export default function Selector() {
-    // const users = [
-    //     { id: 1, name: 'Alice' },
-    //     { id: 2, name: 'Bob' },
-    //     { id: 3, name: 'Charlie' },
-    //     { id: 4, name: 'Alice' },
-    //     { id: 5, name: 'Bob' },
-    //     { id: 6, name: 'Charlie' },
-    //     { id: 7, name: 'Alice' },
-    //     { id: 8, name: 'Bob' },
-    //     { id: 9, name: 'Charlie' },
-    //     { id: 10, name: 'Alice' },
-    //     { id: 11, name: 'Bob' },
-    //     { id: 12, name: 'Charlie' },
-    //     { id: 13, name: 'Alice' },
-    //     { id: 14, name: 'Bob' },
-    //     { id: 15, name: 'Charlie' },
-    //     { id: 16, name: 'Alice' },
-    //     { id: 17, name: 'Bob' },
-    //     { id: 18, name: 'Charlie' },
-    //     { id: 19, name: 'Alice' },
-    //     { id: 20, name: 'Bob' },
-    //     { id: 21, name: 'Charlie' },
-    //     { id: 22, name: 'Alice' },
-    //     { id: 23, name: 'Bob' },
-    //     { id: 24, name: 'Charlie' },
-    //     { id: 25, name: 'Alice' },
-    //     { id: 26, name: 'Bob' },
-    //     { id: 27, name: 'Charlie' },
-    //     { id: 28, name: 'Alice' },
-    //     { id: 29, name: 'Bob' },
-    //     { id: 30, name: 'Charlie' },
-
-    //   ];
+export default function Selector({ setSelectedChat }) {
     const [contacts , setContacts] = useState([]);
-    useEffect (() => {
-        const fetchData = async() => {
-            try{
-                const responce = await axios.get('http://localhost:3001/user/contacts' , {withCredentials : true});
-                // console.log(responce.data.contacts);
-                const newContacts = responce.data.contacts;
-                if ( contacts!== newContacts){
-                    setContacts(newContacts);}
+    const [currentUser, setCurrentUser] = useState(null);
+    const fetchData = async() => {
+        try{
+            const responce = await axios.get('http://localhost:3001/user/contacts' , {withCredentials : true});
+            // console.log(responce.data.contacts);
+            const newContacts = responce.data.contacts;
+            if ( contacts!== newContacts){
+                setContacts(newContacts);}
 
 
-            }catch (e) {
-                console.log(e);
-            }
+        }catch (e) {
+            console.log(e);
         }
+    }
+    useEffect (() => {
+        
         fetchData();
     }, []);
+    useEffect(() => {
+        const getCurrentUser = async () => {
+          try {
+            const response = await axios.get('http://localhost:3001/getCurrentUser', { withCredentials: true });
+            console.log("the current user is " + response.data.username);
+            setCurrentUser(response.data.username);
+          } catch (error) {
+            console.error('Failed to fetch current user:', error);
+          }
+        };
+    
+        getCurrentUser();
+      }, []);
 
     const addContact = async() => {
         let data = prompt("enter name");
@@ -67,6 +48,7 @@ export default function Selector() {
             }, {withCredentials : true}); 
             if (responce.status === 201){
                 toast.success("user added");
+                fetchData();
                 console.log(responce);
             } else if (responce.status === 202) {
                 toast.error("user dont exist");
@@ -77,18 +59,30 @@ export default function Selector() {
                 
             }
         } catch (e){console.log(e);}
-
+    }
+    const changeChat = async (key) => {
+        console.log(key);
+        try{
+            const responce = await axios.post('http://localhost:3001/chatsTo' , {
+                chatter : key
+            }, {withCredentials : true});
+            console.log(responce);
+            
+            setSelectedChat(key);
+        }catch (e){
+            console.log(e);
+        }
     }
     return (
         <div className='selector'>
             <div className='info'>
-            <h3>Users</h3>
+            <h3>{currentUser}</h3>
             <button className='user-icon' id='addContact' onClick={addContact}><FontAwesomeIcon icon={faUser}/></button>
             </div>
             
             <div className='users'>
                 {contacts.map(contact => (
-                    <div className="user" key={Math.random()}>
+                    <div className="user" key={contact} onClick={() => changeChat(contact)}>
                     {contact}
                     </div>
                     

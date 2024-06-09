@@ -1,16 +1,38 @@
-import React , {useState} from 'react'
+import React , {useState , useEffect} from 'react'
 import './message.css';
+import axios from 'axios';
+import { toast } from 'react-toastify'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+
+
+
 export default function Message( {onSendMessage}) {
   const [message, setMessage] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSendMessage(message);
+    try{
+      console.log(message);
+      const responce = await axios.post('http://localhost:3001/sendMsg',{ sentMsg : message }, {withCredentials : true});
+      if (responce.status === 200){
+        onSendMessage(message);
+      } else if (responce.status === 202){
+        toast.error("no user selected");
+      }
+    }catch(e){
+      console.log(e);
+      toast.error("message not sent");
+    }
     setMessage('');
   };
-
+ 
+    
+    
+     
+    
+    
+  
 
   return (
     <div className='message'>

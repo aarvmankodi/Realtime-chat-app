@@ -35,7 +35,8 @@ function Login() {
           // If login is successful, display a success message to the user
           document.cookie = "loginStatus=success; expires=Thu, 18 Dec 2025 12:00:00 UTC; path=/";
           console.log(response.data);
-          navigate("/chats");
+          // document.cookie = "ChattingTo=abc; expires=Thu, 18 Dec 2025 12:00:00 UTC; path=/";
+          navigate("/chats", {state : {user : formData.name}});
           toast("loggeed in")
         } else  {
           toast('User not Found');

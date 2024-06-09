@@ -4,7 +4,7 @@ const cors = require('cors');
 const { connectToDb } = require('./db-conn');
 const bcrypt = require('bcrypt');
 const mongoose = require("mongoose");
-const User = require("./schemas/User");
+const User = require("./person");
 
 const router = express.Router();
 router.use(cors({
@@ -62,12 +62,15 @@ router.post('/login', async (req, res) => {
                    
                     
                     req.session.user = {
-                        id : user._id, 
+                        id : user._id,
+                        name : user.name,
                         email : user.email,
-                        contacts : user.contacts
+                        contacts : user.contacts,
+                        chattingTo : null
                     }
                     
-                    res.status(200).json({ message: 'Login successful', session : req.session });
+                    res.status(200).json({ message: 'Login successful' });
+                    console.log(req.session.user);
                 }else
                 res.status(201).json({ error: 'Invalid credentials' });
             } else {

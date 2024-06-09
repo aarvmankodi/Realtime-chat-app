@@ -4,9 +4,8 @@ const session = require('express-session');
 const { connectToDb , getDb} = require('./db-conn');
 const authenticationRoutes= require('./auth');
 const infoRoutes = require('./info');
-const User = require("./schemas/User");
-const bcrypt = require('bcrypt');
-const MongoStore = require('connect-mongo');
+const chatRoutes = require('./chatting');
+
 
 
 
@@ -22,11 +21,8 @@ app.use(session({
     secret : 'secret',
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({
-        mongoUrl: 'mongodb://localhost:27017/chat-app',
-        collectionName: 'sessions'
-      }),
-    cookie: {   
+    
+    cookie: {    
         maxAge: 24 * 60 * 60 * 1000,
         secure: false, // set to true if using https
         httpOnly: true, // keep it true to prevent client-side access
@@ -41,6 +37,7 @@ app.use(session({
 //Routes
 app.use('/', authenticationRoutes);
 app.use('/', infoRoutes);
+app.use('/' , chatRoutes);
 
 
 

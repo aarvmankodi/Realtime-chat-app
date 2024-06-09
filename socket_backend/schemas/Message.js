@@ -10,12 +10,13 @@ const MessageSchema = new mongoose.Schema({
         required : true
     },
     message : String,
+    
     createdAt : {
         type : Date,
         immutable : true,
         default : () => Date.now()
     }
-})
+}, {collection : 'messages'})
 
 const Message = mongoose.model("Message" , MessageSchema)
 
