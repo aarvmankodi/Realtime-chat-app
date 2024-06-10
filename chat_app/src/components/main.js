@@ -23,9 +23,7 @@ export default function Main() {
     }
     return "";
   };
-
   
-
   return (
     <>
     <Selector setSelectedChat={setSelectedChat} />

@@ -21,10 +21,9 @@ chatting.post('/chatsTo' , (req,res) => {
 })
 
 chatting.post('/sendMsg', async (req,res) => {
-    console.log(req.session.user)
     if (req.session.user.chattingTo){
         const chatsTo = req.session.user.chattingTo;
-        const messageSent = req.body.sentMsg;
+        const messageSent = req.body.sentMsg; 
         try{
             const newMessage = new Message({
                 chatName : chatsTo,
@@ -44,22 +43,26 @@ chatting.post('/sendMsg', async (req,res) => {
 
 })
 
-chatting.get('/getMsg' , async (req,res) => {
-    if (req.session.user.chattingTo !== null){
+chatting.get('/getMsg' , async (req,res) => { 
+    if (req.session.user.chattingTo != 'default'){
         const chatsTo = req.session.user.chattingTo;
         const user = req.session.user.name;
+        const param = req.query.chatName;
+        if (param === chatsTo){
+            const chats = await Message.find({
+                $or: [
+                   { $and : [{chatName : user}, {sender : chatsTo}]},  
+                   { $and : [{chatName : chatsTo}, {sender : user}]}
+                ]
+              });
+              
+            console.log(chats);
+            const messages = chats.map(chat => chat.message); 
+            console.log(messages);
+            res.status(200).json({messagesSent : messages , chatTo : chatsTo});
+        }
         // const chats = await Message.find({chatName : chatsTo});
-        const chats = await Message.find({
-            $or: [
-               { $and : [{chatName : user}, {sender : chatsTo}]},
-               { $and : [{chatName : chatsTo}, {sender : user}]}
-            ]
-          });
-          
-        console.log(chats);
-        const messages = chats.map(chat => chat.message);
-        console.log(messages);
-        res.status(200).json({messagesSent : messages});
+        
     }
 })
 

@@ -16,7 +16,7 @@ app.use(cors({
 }));
 app.use(express.json())  
 
-app.use(session({
+const sessionMiddleWare = session({
     
     secret : 'secret',
     resave: false,
@@ -29,7 +29,8 @@ app.use(session({
         sameSite: 'lax', // or 'strict' or 'none' if secure
         path : '/'
     }
-}));
+})
+app.use(sessionMiddleWare);
 
 
 
@@ -41,5 +42,5 @@ app.use('/' , chatRoutes);
 
 
 
-module.exports = app;
+module.exports = {app};
 

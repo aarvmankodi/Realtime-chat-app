@@ -67,7 +67,7 @@ export default function Selector({ setSelectedChat }) {
                 chatter : key
             }, {withCredentials : true});
             console.log(responce);
-            
+            console.log("key key key" + key)
             setSelectedChat(key);
         }catch (e){
             console.log(e);

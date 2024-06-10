@@ -13,6 +13,12 @@ router.use(cors({
 }));
 router.use(express.json());
 
+// Generate a unique random ID function
+const generateUniqueId = () => {
+    return Math.random().toString(36).substring(2);
+};
+
+
 //database connection
 let db;
 connectToDb((err) => {
@@ -60,13 +66,13 @@ router.post('/login', async (req, res) => {
                 const isPasswordValid = await bcrypt.compare(password, user.password);
                 if (isPasswordValid){
                    
-                    
+                    const uniqueId = generateUniqueId();
                     req.session.user = {
-                        id : user._id,
+                        id : uniqueId,
                         name : user.name,
                         email : user.email,
                         contacts : user.contacts,
-                        chattingTo : null
+                        chattingTo : 'default'
                     }
                     
                     res.status(200).json({ message: 'Login successful' });

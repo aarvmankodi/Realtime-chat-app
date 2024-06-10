@@ -3,7 +3,7 @@ const http = require("http");
 const socketIo = require('socket.io');
 const cors = require('cors');
 const { connectToDb , getDb} = require('./db-conn');
-const app = require("./app")
+const {app} = require("./app");
 
 
 
@@ -14,6 +14,7 @@ const io = socketIo(server, {
     methods: ["GET", "POST"]
   }
 });
+
 
 app.use(cors({
   origin: "http://localhost:3000"   
@@ -31,8 +32,19 @@ io.on("connection" , (socket) => {
   });
 
 
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
+  socket.on('chat message',(msg) => {
+    {
+      console.log(msg);
+      io.emit('chat message', msg);
+    }
+    
+  });
+
+  socket.on('clear chat', () => {
+    console.log("Clearing chat");
+
+    // This will broadcast the clear chat event to all connected clients
+    io.emit('clear chat');
   });
 });
 

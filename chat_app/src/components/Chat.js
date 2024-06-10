@@ -26,10 +26,17 @@ export default function Chat({ selectedChat }) {
     });
 
     socket.on('chat message', (msg) => {
-      console.log("Received message:", msg);
+      {
+        console.log("Received message:", msg);
       
-      setMessages((prevMessages) => [...prevMessages, msg]);
+      setMessages((prevMessages) => [...prevMessages, msg.message]);
+      }
       
+      socket.on('clear chat', () => {
+        console.log("Clearing chat");
+    
+        setMessages([]);
+      });
       
     });
 
@@ -44,14 +51,17 @@ export default function Chat({ selectedChat }) {
     
     const getMessages = async() => {
       try{
+        console.log("sending the parameter" , selectedChat);
         const responce = await axios.get('http://localhost:3001/getMsg' , {withCredentials : true,
-          //params: { chatName: selectedChat }
+          params: { chatName: selectedChat }
         });
+        console.log(responce);
         let msgs = responce.data.messagesSent;
         clearMessages();
         for (let message of msgs){
           console.log("the message is " + message);
           handleSendMessage(message);
+          // socket.emit('chat message',  {selectedChat , currentUser ,message});
         }
       }catch(e){
         console.log(e);
@@ -59,7 +69,9 @@ export default function Chat({ selectedChat }) {
     }
 
     if (selectedChat) {
+      console.log("selected chat " + selectedChat)
       // socket.emit('join room', selectedChat);
+      clearMessages();
       getMessages();
     }
   }, [selectedChat]);
@@ -80,12 +92,14 @@ export default function Chat({ selectedChat }) {
   
   const handleSendMessage = (message) => { 
     console.log("Sending message:", message);
-    socket.emit('chat message',  message);
+    console.log("selected chat dsgsdg " + selectedChat)
+    socket.emit('clear chat');
+    socket.emit('chat message',  {selectedChat , currentUser ,message});
   };
 
   return (
     <div className='chat'>
-      <User/>
+      <User talkingTo={selectedChat}/>
       <ul>
         {messages.map((msg, index) => (
           <li className='chat-messages' key={index}>{msg}</li>
