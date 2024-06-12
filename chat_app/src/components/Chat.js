@@ -6,8 +6,10 @@ import Message from './chat_components/message';
 import User from './chat_components/user';
 import { toast } from 'react-toastify'; 
 
-
-const socket = io('http://localhost:3001');
+// Ensure withCredentials is set to true
+const socket = io('http://localhost:3001', {
+  withCredentials: true,
+});
 
 export default function Chat({ selectedChat }) {
   const clearMessages = () => {
@@ -26,18 +28,13 @@ export default function Chat({ selectedChat }) {
     });
 
     socket.on('chat message', (msg) => {
-      {
-        console.log("Received message:", msg);
-      
+      console.log("Received message:", msg);
       setMessages((prevMessages) => [...prevMessages, msg.message]);
-      }
       
       socket.on('clear chat', () => {
         console.log("Clearing chat");
-    
         setMessages([]);
       });
-      
     });
 
     return () => {
@@ -46,31 +43,30 @@ export default function Chat({ selectedChat }) {
       socket.off('chat message');
     };
   }, []);
- 
+
   useEffect(() => {
-    
-    const getMessages = async() => {
-      try{
-        console.log("sending the parameter" , selectedChat);
-        const responce = await axios.get('http://localhost:3001/getMsg' , {withCredentials : true,
+    const getMessages = async () => {
+      try {
+        console.log("sending the parameter", selectedChat);
+        const response = await axios.get('http://localhost:3001/getMsg', {
+          withCredentials: true,
           params: { chatName: selectedChat }
         });
-        console.log(responce);
-        let msgs = responce.data.messagesSent;
+        console.log(response);
+        let msgs = response.data.messagesSent;
+        let chatTo = response.data.chatTo;
         clearMessages();
-        for (let message of msgs){
+        for (let message of msgs) {
           console.log("the message is " + message);
-          handleSendMessage(message);
-          // socket.emit('chat message',  {selectedChat , currentUser ,message});
+          handleSendMessage(message, chatTo);
         }
-      }catch(e){
+      } catch (e) {
         console.log(e);
       }
     }
 
     if (selectedChat) {
       console.log("selected chat " + selectedChat)
-      // socket.emit('join room', selectedChat);
       clearMessages();
       getMessages();
     }
@@ -90,11 +86,10 @@ export default function Chat({ selectedChat }) {
     getCurrentUser();
   }, []);
   
-  const handleSendMessage = (message) => { 
+  const handleSendMessage = (message, chatTo) => { 
     console.log("Sending message:", message);
-    console.log("selected chat dsgsdg " + selectedChat)
-    socket.emit('clear chat');
-    socket.emit('chat message',  {selectedChat , currentUser ,message});
+    console.log("selected chat dsgsdg " + chatTo);
+    socket.emit('chat message', { chatTo, currentUser, message });
   };
 
   return (

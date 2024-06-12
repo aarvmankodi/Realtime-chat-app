@@ -3,15 +3,16 @@ const http = require("http");
 const socketIo = require('socket.io');
 const cors = require('cors');
 const { connectToDb , getDb} = require('./db-conn');
-const {app} = require("./app");
-
+const {app , sessionMiddleWare, wrap} = require("./app");
+require("dotenv").config();
 
 
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST"],
+    credentials: true 
   }
 });
 
@@ -20,6 +21,7 @@ app.use(cors({
   origin: "http://localhost:3000"   
 }));
 
+io.use(wrap(sessionMiddleWare));
 
 io.on("connection" , (socket) => {
 
@@ -34,7 +36,8 @@ io.on("connection" , (socket) => {
 
   socket.on('chat message',(msg) => {
     {
-      console.log(msg);
+      console.log("this is the session tho" , socket.request.session.user)
+      console.log("msging up in here" , msg);
       io.emit('chat message', msg);
     }
     
@@ -47,6 +50,8 @@ io.on("connection" , (socket) => {
     io.emit('clear chat');
   });
 });
+
+
 
 
 

@@ -5,7 +5,7 @@ const { connectToDb , getDb} = require('./db-conn');
 const authenticationRoutes= require('./auth');
 const infoRoutes = require('./info');
 const chatRoutes = require('./chatting');
-
+require("dotenv").config(); 
 
 
 
@@ -33,7 +33,7 @@ const sessionMiddleWare = session({
 app.use(sessionMiddleWare);
 
 
-
+const wrap = (expressMiddleWare) => (socket , next) => expressMiddleWare(socket.request, {}, next );
 
 //Routes
 app.use('/', authenticationRoutes);
@@ -42,5 +42,5 @@ app.use('/' , chatRoutes);
 
 
 
-module.exports = {app};
+module.exports = {app , sessionMiddleWare , wrap};
 

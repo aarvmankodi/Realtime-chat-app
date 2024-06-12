@@ -16,8 +16,8 @@ chatting.use(express.json());
 chatting.post('/chatsTo' , (req,res) => {
     const chatsTo = req.body.chatter;
     req.session.user.chattingTo = chatsTo;
-    res.status(200).json({message : 'Chatter changed'});
-    console.log(req.session.user);
+    res.status(200).json({message : 'Chatter changed'}); 
+    console.log( req.session.user);
 })
 
 chatting.post('/sendMsg', async (req,res) => {
