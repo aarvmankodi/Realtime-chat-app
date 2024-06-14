@@ -43,7 +43,10 @@ export default function Chat({ selectedChat }) {
     socket.on('chat message', (msg) => {
       console.log("Received message: ????", msg);
       msg.msgs.forEach(message => {
-        setMessages((prevMessages) => [...prevMessages , message.message])
+        setMessages((prevMessages) => [...prevMessages ,{
+          text : message.message,
+          sender : message.sender
+        }])
       })
 
 
@@ -120,9 +123,10 @@ export default function Chat({ selectedChat }) {
   return (
     <div className='chat'>
       <User talkingTo={selectedChat}/>
-      <ul>
+      <ul className='list'>
         {messages.map((msg, index) => (
-          <li className='chat-messages' key={index}>{msg}</li>
+          <li  className={`chat-messages ${msg.sender === currentUser ? 'self' : 'other'}`} 
+           key={index}>{msg.text} {msg.sender}</li>
         ))}
       </ul>
       <Message onSendMessage={handleSendMessage}/>

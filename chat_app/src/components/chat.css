@@ -5,8 +5,11 @@
     background-color: aqua;
 }
 
-ul{
+.list{
     list-style: none;
+    display : flex;
+    flex-direction: column;
+    width : 100%;
 }
 .chat-messages{
     background-color: black;
@@ -16,8 +19,14 @@ ul{
     max-width : 50%;
     padding-top : 5px;
     padding-bottom: 5px;
-    
     word-wrap:break-word;
     margin-top : 10px;
     border-radius : 10px;
 }
+.self{
+    background-color: purple;
+    text-align: left;
+    align-self:flex-end;
+    margin-right : 25px;
+}
+
