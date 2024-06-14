@@ -6,8 +6,13 @@ const authenticationRoutes= require('./auth');
 const infoRoutes = require('./info');
 const chatRoutes = require('./chatting');
 require("dotenv").config(); 
+const MongoStore = require('connect-mongo');
+const { v4: uuidv4 } = require('uuid'); 
 
-
+function generateCookieName() {
+    const uniqueId = uuidv4(); // Generate a random UUID
+    return `session_${uniqueId}`; // Prefixing with 'session_' for clarity
+  }
 
 const app = express()
 app.use(cors({
@@ -15,22 +20,25 @@ app.use(cors({
     credentials: true // Allow credentials to be sent
 }));
 app.use(express.json())  
+const cookieName = generateCookieName();
+
 
 const sessionMiddleWare = session({
     
     secret : 'secret',
     resave: false,
     saveUninitialized: false,
-    
-    cookie: {    
+    store: MongoStore.create({ mongoUrl: 'mongodb://localhost:27017/chat-app' }),
+    cookie: {   
+        name: cookieName, 
         maxAge: 24 * 60 * 60 * 1000,
         secure: false, // set to true if using https
         httpOnly: true, // keep it true to prevent client-side access
         sameSite: 'lax', // or 'strict' or 'none' if secure
-        path : '/'
+        path : '/' 
     }
 })
-app.use(sessionMiddleWare);
+app.use(sessionMiddleWare); 
 
 
 const wrap = (expressMiddleWare) => (socket , next) => expressMiddleWare(socket.request, {}, next );

@@ -16,8 +16,14 @@ chatting.use(express.json());
 chatting.post('/chatsTo' , (req,res) => {
     const chatsTo = req.body.chatter;
     req.session.user.chattingTo = chatsTo;
-    res.status(200).json({message : 'Chatter changed'}); 
-    console.log( req.session.user);
+    req.session.save((err) => {
+        if (err) {
+          console.error('Failed to save session:', err);
+          return res.status(500).json({ message: 'Failed to change chatter' });
+        }
+        console.log('Session after save:', req.session.user.chattingTo);
+        res.status(200).json({ message: 'Chatter changed' });
+      });
 })
 
 chatting.post('/sendMsg', async (req,res) => {
@@ -32,8 +38,8 @@ chatting.post('/sendMsg', async (req,res) => {
             });
     
             await newMessage.save();
-    
-            res.status(200).json({message : 'message sent'}); 
+            console.log("ttttttttttttt" , newMessage);
+            res.status(200).json({report : 'message sent', chatTo : chatsTo , message : newMessage}); 
         } catch(e){
             res.status(400).json({err : 'message not sent'});
         }
@@ -54,12 +60,22 @@ chatting.get('/getMsg' , async (req,res) => {
                    { $and : [{chatName : user}, {sender : chatsTo}]},  
                    { $and : [{chatName : chatsTo}, {sender : user}]}
                 ]
+              })
+                console.log("///////" , chats);
+            chats.sort(function(a,b){
+                // Turn your strings into dates, and then subtract them
+                // to get a value that is either negative, positive, or zero.
+                // console.log((b.createdAt) , b.message);
+                // console.log((a.createdAt) , a.message);
+                return (a.createdAt) - (b.createdAt);
               });
+              console.log("???????" , chats)
+            // const messages = chats.map(chat => chat.message); 
+            // console.log(messages);
+            res.status(200).json({messagesSent : chats , chatTo : chatsTo});
               
-            console.log(chats);
-            const messages = chats.map(chat => chat.message); 
-            console.log(messages);
-            res.status(200).json({messagesSent : messages , chatTo : chatsTo});
+              
+            
         }
         // const chats = await Message.find({chatName : chatsTo});
         

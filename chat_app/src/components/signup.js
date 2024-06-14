@@ -49,7 +49,7 @@ function SignUp() {
       if (password1 === password2 && password1!== ''){
         try {
 
-          await axios.post('http://localhost:3001/signup', formData);
+          await axios.post('http://localhost:3001/signup', formData , {withcredentials: true});
           toast('New User Added');
           
         } catch (error) {

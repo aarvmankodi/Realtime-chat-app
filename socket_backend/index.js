@@ -5,6 +5,8 @@ const cors = require('cors');
 const { connectToDb , getDb} = require('./db-conn');
 const {app , sessionMiddleWare, wrap} = require("./app");
 require("dotenv").config();
+const { promisify } = require('util');
+
 
 
 const server = http.createServer(app);
@@ -23,9 +25,52 @@ app.use(cors({
 
 io.use(wrap(sessionMiddleWare));
 
-io.on("connection" , (socket) => {
+// io.on("connection" , (socket) => {
+//   console.log('New connection, session ID:', socket.request.sessionID);
 
   
+//   socket.on('registerSocket', async () => {
+//     const db = getDb();
+//     const users = db.collection('users');
+//     await users.updateOne({ _id: socket.userId }, { $set: { socketId: socket.id } });
+//     socket.emit('registered', socket.userId);
+//   });
+
+//   socket.on('join room', (room) => {
+//     socket.join(room);
+//     console.log(`Socket ${socket.id} joined room ${room}`);
+//   });
+
+//   socket.on('chat message', async (msg) => {
+    
+//     // socket.request.session.reload((err) => {
+//     //   if (err) {
+//     //     console.error('Failed to reload session:', err);
+//     //     return;
+//     //   }})
+//     const reloadSession = promisify(socket.request.session.reload).bind(socket.request.session);
+//     await reloadSession();
+//     {
+
+//       //console.log("msging up in here" , msg);
+//       console.log("Session ID:", socket.request.sessionID);
+//       console.log("Session data:", socket.request.session.user);
+//       socket.to(socket.request.session.user.name).emit('chat message', msg);
+//     }
+//       //console.log("this is the session tho" , socket.request.session.user.chattingTo)
+      
+//   });
+
+//   socket.on('clear chat', () => {
+//     console.log("Clearing chat");
+
+//     // This will broadcast the clear chat event to all connected clients
+//     io.emit('clear chat');
+//   });
+// });
+io.on("connection", (socket) => {
+  console.log('New connection, session ID:', socket.request.sessionID);
+
   socket.on('registerSocket', async () => {
     const db = getDb();
     const users = db.collection('users');
@@ -33,21 +78,46 @@ io.on("connection" , (socket) => {
     socket.emit('registered', socket.userId);
   });
 
-
-  socket.on('chat message',(msg) => {
-    {
-      console.log("this is the session tho" , socket.request.session.user)
-      console.log("msging up in here" , msg);
-      io.emit('chat message', msg);
-    }
-    
+  socket.on('join room', ({ currentUser, selectedChat }) => {
+    const room = `${currentUser}-${selectedChat}`;
+    socket.join(room);
+    console.log(`Socket ${socket.id} joined room ${room}`);
   });
 
-  socket.on('clear chat', () => {
-    console.log("Clearing chat");
+  socket.on('chat message', async (msg) => {
+    try {
+      const reloadSession = promisify(socket.request.session.reload).bind(socket.request.session);
+      await reloadSession();
+      
+      if (socket.request.session.user) {
+        const chatRoom = `${socket.request.session.user.name}-${msg.chatTo}`;
+        console.log("Session ID:", socket.request.sessionID);
+        console.log("Session data:", socket.request.session.user);
+        console.log("Emitting message to room:", chatRoom);
+        io.to(chatRoom).emit('chat message', msg); // Emit to the specific room
+      } else {
+        console.log("No user session found");
+      }
+    } catch (err) {
+      console.error('Failed to reload session:', err);
+    }
+  });
 
-    // This will broadcast the clear chat event to all connected clients
-    io.emit('clear chat');
+  socket.on('clear chat', async () => {
+    try {
+      const reloadSession = promisify(socket.request.session.reload).bind(socket.request.session);
+      await reloadSession();
+
+      if (socket.request.session.user) {
+        const chatRoom = `${socket.request.session.user.name}-${socket.request.session.user.chattingTo}`;
+        console.log("Clearing chat for room:", chatRoom);
+        io.to(chatRoom).emit('clear chat'); // Emit clear chat to the specific room
+      } else {
+        console.log("No user session found");
+      }
+    } catch (err) {
+      console.error('Failed to reload session:', err);
+    }
   });
 });
 

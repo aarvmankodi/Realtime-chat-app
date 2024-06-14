@@ -16,16 +16,13 @@ info.use(express.json());
 info.get('/user/contacts', async (req, res) => {
     if (req.session.user){
         const RealUser = await User.findOne({email : req.session.user.email});
-        console.log(RealUser.contacts);
         console.log("req time");
         req.session.user.contacts = RealUser.contacts;
-        console.log("this is totally the one"); 
-        console.log(req.session.user.contacts);       
         res.status(200).json({ contacts: req.session.user.contacts });
     } else {
         
-        console.log("user dont exist");
-        res.status(201).json({ error: 'Not authenticated' });
+        console.log("user dont exist"); 
+        res.status(201).json({ error: 'Not authenticated' }); 
     }
 });
 

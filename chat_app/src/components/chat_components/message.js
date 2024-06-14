@@ -16,7 +16,10 @@ export default function Message( {onSendMessage}) {
       console.log(message);
       const responce = await axios.post('http://localhost:3001/sendMsg',{ sentMsg : message }, {withCredentials : true});
       if (responce.status === 200){
-        onSendMessage(message);
+        
+        const sentMsg  = [ responce.data.message];
+        console.log("klkkkkkkkk" , sentMsg);
+        onSendMessage(sentMsg , responce.data.chatTo);
       } else if (responce.status === 202){
         toast.error("no user selected");
       }
