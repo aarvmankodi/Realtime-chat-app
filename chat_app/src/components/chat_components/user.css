@@ -1,12 +1,15 @@
 .user-info{
     width : 85vw;
-    height : 6%;
-    background-color: blueviolet;
+    height : 8%;
+    background: rgb(30,30,30);
     display: flex;
     align-items: center;
     padding-left: 20px;
+    position : absolute;
+    top : 0;
+    border : 1px solid black;
+    color : white;
 }
-
 .user-icon{
     width : 45px;
     height : 45px;
@@ -17,7 +20,7 @@
     margin-right: 10px; 
     font-size: 25px;
     background-color: orange;
-    color: rgb(30,30,30);
+    color : black;
 
 }
 

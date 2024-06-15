@@ -1,32 +1,69 @@
+
+
+
 .chat{
     height : 100vh;
     width : 85vw;
     margin-left:15vw;
-    background-color: aqua;
+    background-color: rgb(41, 36, 71);
+    overflow : auto;
 }
 
+.outerchat{
+    width : 100%;
+    padding-top : 5%;
+    height : 90%;
+    overflow-y: auto;
+}
 .list{
     list-style: none;
     display : flex;
     flex-direction: column;
-    width : 100%;
+    color : rgb(200,200,200);
+    /* height : 84%; */
+    
 }
 .chat-messages{
-    background-color: black;
+    width : 100%;
+    display: flex;
+    flex-direction: column;
+}
+.self{
+    background-color: rgb(48, 21, 54);
     color : white;
-    width:fit-content;
-    padding : 10px;
     max-width : 50%;
-    padding-top : 5px;
-    padding-bottom: 5px;
+    padding : 7px;
     word-wrap:break-word;
     margin-top : 10px;
     border-radius : 10px;
-}
-.self{
-    background-color: purple;
+    width:fit-content;
     text-align: left;
     align-self:flex-end;
     margin-right : 25px;
+    
 }
 
+.other{
+    background-color: rgb(23, 37, 68);
+    color : white;
+    max-width : 50%;
+    padding : 7px;
+    word-wrap:break-word;
+    margin-top : 10px;
+    border-radius : 10px;
+    width:fit-content;
+    text-align: left;
+    align-self:flex-start;
+}
+.self-user{
+    align-self: flex-end;
+    margin-right : 25px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.other-user{
+    align-self: flex-start;
+    font-size: 15px;
+    font-weight: bold;
+}

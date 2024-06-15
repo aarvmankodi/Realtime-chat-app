@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useRef} from 'react';
 import './chat.css';
 import io from 'socket.io-client';
 import axios from 'axios';
@@ -17,12 +17,14 @@ export default function Chat({ selectedChat }) {
   };
   const [messages, setMessages] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const chatContainerRef = useRef(null);
 
 
 
   useEffect(() => {
     if (currentUser && selectedChat) {
       socket.emit('join room', { currentUser, selectedChat }); 
+      
     }
   }, [selectedChat, currentUser]);
   
@@ -49,7 +51,7 @@ export default function Chat({ selectedChat }) {
         }])
       })
 
-
+      
   
     });
   
@@ -65,7 +67,14 @@ export default function Chat({ selectedChat }) {
     };
   }, [selectedChat]);
   
-
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      console.log("qqqqqqqqqqqqqqqqqqqqqqqqq")
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      let abc = document.getElementsByClassName('uterchat');
+      abc.scrollTop = abc.scrollHeight;
+    }
+  };
 
   useEffect(() => {
     const getMessages = () => {
@@ -82,8 +91,9 @@ export default function Chat({ selectedChat }) {
         
         console.log("?????????????" , msgs);
         clearMessages();
+        
         handleSendMessage(msgs , chatTo);
-      
+        scrollToBottom();
         
       })
       .catch(e => {
@@ -118,17 +128,26 @@ export default function Chat({ selectedChat }) {
     console.log("Sending message:", msgs);
     console.log("selected chat", chatTo);
     socket.emit('chat message', { chatTo, currentUser, msgs });
+    scrollToBottom()
   };
   
   return (
     <div className='chat'>
       <User talkingTo={selectedChat}/>
+      <div className='outerchat' ref={chatContainerRef}>
       <ul className='list'>
         {messages.map((msg, index) => (
-          <li  className={`chat-messages ${msg.sender === currentUser ? 'self' : 'other'}`} 
-           key={index}>{msg.text} {msg.sender}</li>
+          <div className='chat-messages'>
+            <li key={index}  className={`${msg.sender === currentUser ? 'self' : 'other'}`}>{msg.text}</li>
+           <li className={`sender ${msg.sender === currentUser ? 'self-user' : 'other-user'}`}>
+           {msg.sender === currentUser ? 'you' : msg.sender}
+            </li>
+          </div>
+          
         ))}
       </ul>
+      </div>
+      
       <Message onSendMessage={handleSendMessage}/>
     </div>
   );
