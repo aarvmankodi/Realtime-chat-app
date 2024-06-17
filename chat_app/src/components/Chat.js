@@ -66,15 +66,7 @@ export default function Chat({ selectedChat }) {
       socket.off('chat message');
     };
   }, [selectedChat]);
-  
-  const scrollToBottom = () => {
-    if (chatContainerRef.current) {
-      console.log("qqqqqqqqqqqqqqqqqqqqqqqqq")
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-      let abc = document.getElementsByClassName('uterchat');
-      abc.scrollTop = abc.scrollHeight;
-    }
-  };
+ 
 
   useEffect(() => {
     const getMessages = () => {
@@ -93,7 +85,6 @@ export default function Chat({ selectedChat }) {
         clearMessages();
         
         handleSendMessage(msgs , chatTo);
-        scrollToBottom();
         
       })
       .catch(e => {
@@ -128,7 +119,6 @@ export default function Chat({ selectedChat }) {
     console.log("Sending message:", msgs);
     console.log("selected chat", chatTo);
     socket.emit('chat message', { chatTo, currentUser, msgs });
-    scrollToBottom()
   };
   
   return (
@@ -139,7 +129,7 @@ export default function Chat({ selectedChat }) {
         {messages.map((msg, index) => (
           <div className='chat-messages'>
             <li key={index}  className={`${msg.sender === currentUser ? 'self' : 'other'}`}>{msg.text}</li>
-           <li className={`sender ${msg.sender === currentUser ? 'self-user' : 'other-user'}`}>
+           <li key={index+100}className={`sender ${msg.sender === currentUser ? 'self-user' : 'other-user'}`}>
            {msg.sender === currentUser ? 'you' : msg.sender}
             </li>
           </div>

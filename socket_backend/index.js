@@ -25,49 +25,6 @@ app.use(cors({
 
 io.use(wrap(sessionMiddleWare));
 
-// io.on("connection" , (socket) => {
-//   console.log('New connection, session ID:', socket.request.sessionID);
-
-  
-//   socket.on('registerSocket', async () => {
-//     const db = getDb();
-//     const users = db.collection('users');
-//     await users.updateOne({ _id: socket.userId }, { $set: { socketId: socket.id } });
-//     socket.emit('registered', socket.userId);
-//   });
-
-//   socket.on('join room', (room) => {
-//     socket.join(room);
-//     console.log(`Socket ${socket.id} joined room ${room}`);
-//   });
-
-//   socket.on('chat message', async (msg) => {
-    
-//     // socket.request.session.reload((err) => {
-//     //   if (err) {
-//     //     console.error('Failed to reload session:', err);
-//     //     return;
-//     //   }})
-//     const reloadSession = promisify(socket.request.session.reload).bind(socket.request.session);
-//     await reloadSession();
-//     {
-
-//       //console.log("msging up in here" , msg);
-//       console.log("Session ID:", socket.request.sessionID);
-//       console.log("Session data:", socket.request.session.user);
-//       socket.to(socket.request.session.user.name).emit('chat message', msg);
-//     }
-//       //console.log("this is the session tho" , socket.request.session.user.chattingTo)
-      
-//   });
-
-//   socket.on('clear chat', () => {
-//     console.log("Clearing chat");
-
-//     // This will broadcast the clear chat event to all connected clients
-//     io.emit('clear chat');
-//   });
-// });
 io.on("connection", (socket) => {
   console.log('New connection, session ID:', socket.request.sessionID);
 

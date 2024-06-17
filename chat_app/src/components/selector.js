@@ -1,13 +1,37 @@
-import React, { useEffect , useState } from 'react';
+import React, { useEffect , useState , useRef } from 'react';
 import './selector.css';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faU, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'; 
 
 export default function Selector({ setSelectedChat }) {
     const [contacts , setContacts] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
+    const [menuOpen, setMenuOpen] = useState('close');
+    const menuRef = useRef(null);
+
+    const handleClickOutside = (event) => {
+        if (menuRef.current && !menuRef.current.contains(event.target)) {
+            setMenuOpen('close');
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const toggleMenuOpen = () => {
+    
+        if ( menuOpen === 'open')
+            setMenuOpen('close');
+        else
+            setMenuOpen('open');
+    }; 
+
     const fetchData = async() => {
         try{
             const responce = await axios.get('http://localhost:3001/user/contacts' , {withCredentials : true});
@@ -38,27 +62,32 @@ export default function Selector({ setSelectedChat }) {
     
         getCurrentUser();
       }, []);
-
+      
     const addContact = async() => {
-        let data = prompt("enter name");
+        let data = document.getElementById("search-new").value;
+        
         console.log(data);
-        try{
-            const responce = await axios.post('http://localhost:3001/user/contacts/add', {
-            newData: data
-            }, {withCredentials : true}); 
-            if (responce.status === 201){
-                toast.success("user added");
-                fetchData();
-                console.log(responce);
-            } else if (responce.status === 202) {
-                toast.error("user dont exist");
-                console.log("no user");
-                console.log(responce);
-            } else if (responce.status === 203){
-                toast.error("user already added");
-                
-            }
-        } catch (e){console.log(e);}
+        if (data){  
+            try{
+                const responce = await axios.post('http://localhost:3001/user/contacts/add', {
+                newData: data
+                }, {withCredentials : true}); 
+                if (responce.status === 201){
+                    toast.success("user added");
+                    fetchData();
+                    console.log(responce);
+                } else if (responce.status === 202) {
+                    toast.error("user dont exist");
+                    console.log("no user");
+                    console.log(responce);
+                } else if (responce.status === 203){
+                    toast.error("user already added");
+                    
+                }
+            } catch (e){console.log(e);}
+            document.getElementById("search-new").value = "";
+        }
+        
     }
     const changeChat = async (key) => {
         console.log(key);
@@ -77,8 +106,22 @@ export default function Selector({ setSelectedChat }) {
         <div className='selector'>
             <div className='info'>
             <h3>{currentUser}</h3>
-            <button className='user-icon' id='addContact' onClick={addContact}><FontAwesomeIcon icon={faUser}/></button>
+            <button id='addContact' onClick={toggleMenuOpen}><FontAwesomeIcon className="plus" icon={faBars}/></button>
             </div>
+            <div  ref={menuRef} className={`user-settings ${menuOpen}`} >
+          {/*Stuff we need to add here : 
+            Remove Chats button
+            User info button
+            block button
+          */}
+          {/* <div className='chat-setting-button'>Add new user</div> */}
+          <div className='search-setting'><input type='text' id='search-new' placeholder='add user'></input>
+          <button id='search-new-btn' onClick={addContact}><FontAwesomeIcon icon={faSearch}/></button></div>
+          <div className='chat-setting-button'>Delete users</div>
+          <div className='chat-setting-button'>Info</div>
+          <div className='chat-setting-button' id='block'>Log Out </div>
+          <div className='chat-setting-button' id='block'>Delete Account</div>
+        </div>
             
             <div className='users'>
                 {contacts.map(contact => (

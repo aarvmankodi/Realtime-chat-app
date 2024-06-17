@@ -37,13 +37,13 @@ function Login() {
           console.log(response.data);
           // document.cookie = "ChattingTo=abc; expires=Thu, 18 Dec 2025 12:00:00 UTC; path=/";
           navigate("/chats", {state : {user : formData.name}});
-          toast("loggeed in")
+          toast.success("loggeed in")
         } else  {
-          toast('User not Found');
+          toast.error('User not Found');
         }
       } catch (error) {
         console.error('Error during login:', error);
-        toast('Error while loggin in');
+        toast.error('Error while loggin in');
         
       }
     }

@@ -5,8 +5,8 @@
     width : 15vw;
     border : 1px solid black;
     color : white;
-    overflow-y: hidden; 
     box-sizing: border-box;
+    overflow-y: visible;
     
 }
 
@@ -15,7 +15,9 @@
 .info{
     margin-top : 5px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    align-items: center;
+
 }
 .users{
     width : 100%;
@@ -33,24 +35,105 @@
     width : 97%;
     height : 7vh;
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
+    align-items: center;
     padding-left : 20px;
-    align-items: end;
     border-radius: 10px;
-    padding-top : 10px;
-    padding-bottom: 10px;
+    /* padding-top : 10px; */
+    /* padding-bottom: 10px; */
     word-break: break-all;
+    font-size: 20px;
+    text-transform: capitalize;
 }
 
 .user:hover{
     background-color: rgb(20,20,20);
 }
-#addContact{
-    border : none
-}
+
 
 h3{
     margin-top : 10px;
     padding-left : 20px;
     text-transform: capitalize;
+}
+
+#addContact{
+    height : 50px;
+    width : 50px;
+    font-size: 25px;
+    color : white;
+    background: transparent;
+    border-radius: 50%;
+    margin-left : 30px;
+    margin-top: 5px;
+    scale : 130%;
+    border: none;
+    
+}
+
+
+.plus:hover{
+    color : rgb(200,200,200);
+}
+
+.user-settings{
+    padding-top : 5px;
+    padding-bottom: 5px;
+    background-color: rgb(30,30,30);
+    position : absolute;
+    width : 200px;
+    top : 2%;
+    left: 70%;
+    height : auto;
+    box-shadow: 1px 2px 10px black;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+
+}
+
+.user-setting-button{
+    height : auto;
+    width : 90%;
+    /* border: 2px solid black; */
+    text-align: left;
+    padding-left: 20px;
+    border-radius: 5px;
+    color : white;
+    transition: all 0.2s ease-in;
+    padding : 10px;
+}
+
+.close{
+    display : none;
+}
+
+#search-new{
+    width : 85%;
+    background-color: rgb(40,40,40);
+    border-radius: 20px;
+    margin-left : 5px;
+    padding-left: 10px;
+    height : 30px;
+    font-size: 15px;
+}
+
+#search-new-btn{
+    width : 5px;
+    border : none;
+    margin-left : 3px;
+    background : none;
+}
+
+.search-setting{
+    margin-top : 5px;
+    margin-bottom: 5px;
+    margin-right: 10%;
+    margin-left: 5%;
+    padding-top : 10px;
+    padding-bottom : 10px;
+    
 }

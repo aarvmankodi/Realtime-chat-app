@@ -63,21 +63,16 @@ chatting.get('/getMsg' , async (req,res) => {
               })
                 console.log("///////" , chats);
             chats.sort(function(a,b){
-                // Turn your strings into dates, and then subtract them
-                // to get a value that is either negative, positive, or zero.
-                // console.log((b.createdAt) , b.message);
-                // console.log((a.createdAt) , a.message);
+                
                 return (a.createdAt) - (b.createdAt);
               });
               console.log("???????" , chats)
-            // const messages = chats.map(chat => chat.message); 
-            // console.log(messages);
+            
             res.status(200).json({messagesSent : chats , chatTo : chatsTo});
               
               
             
         }
-        // const chats = await Message.find({chatName : chatsTo});
         
     }
 })

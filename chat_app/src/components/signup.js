@@ -50,7 +50,7 @@ function SignUp() {
         try {
 
           await axios.post('http://localhost:3001/signup', formData , {withcredentials: true});
-          toast('New User Added');
+          toast.success('New User Added');
           
         } catch (error) {
           console.error('Error submitting form:', error);

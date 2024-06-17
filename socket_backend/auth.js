@@ -56,12 +56,9 @@ router.post('/signup', async (req, res) => {
 // Login Route
 router.post('/login', async (req, res) => {
     const { form, email, password } = req.body;
-
-    
         try {
             if ( form === 'users'){
-                const user = await User.findOne({ email });
-    
+                const user = await User.findOne({ email })    
             if (user) {
                 const isPasswordValid = await bcrypt.compare(password, user.password);
                 if (isPasswordValid){

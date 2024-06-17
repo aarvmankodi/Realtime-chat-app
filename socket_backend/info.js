@@ -30,16 +30,16 @@ info.post('/user/contacts/add', async (req,res) => {
     ;
     try
         {
-        const newUserEmail = req.body.newData;
-        const userEmail = req.session.user.email;
+        const newUserName = req.body.newData;
+        const userName = req.session.user.name;
             
 
-        const user = await User.findOne({email : userEmail});
-        const newUser = await User.findOne({email : newUserEmail});
+        const user = await User.findOne({name : userName});
+        const newUser = await User.findOne({name : newUserName});
         
         if (user){
-            if (newUser ){
-                if (user.contacts.includes(newUser.name) || user.email === newUser.email){
+            if (newUser){
+                if (user.contacts.includes(newUser.name) || user.name === newUser.name){
                     return res.status(203).json({message : 'User is already in contacts'});
                 } else {
                     user.contacts.push(newUser.name);

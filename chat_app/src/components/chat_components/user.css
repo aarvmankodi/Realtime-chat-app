@@ -9,6 +9,7 @@
     top : 0;
     border : 1px solid black;
     color : white;
+    overflow :visible;
 }
 .user-icon{
     width : 45px;
@@ -28,4 +29,60 @@
     margin-left : 20px;
     font-weight: 700;
     font-size: larger;
+    margin-right : 85%;
+    text-transform: capitalize;
+}
+
+.hide{
+    display : none;
+}
+
+.chat-settings{
+    padding-top : 5px;
+    padding-bottom: 5px;
+    background-color: rgb(30,30,30);
+    height : auto;
+    width : 200px;
+    position : absolute;
+    top : 20%;
+    right :1%;
+    color : black;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 2px 10px black;
+    border-radius: 10px;
+}
+
+.chat-setting-button{
+    height : auto;
+    width : 90%;
+    /* border: 2px solid black; */
+    text-align: left;
+    padding-left: 20px;
+    border-radius: 5px;
+    color : white;
+    transition: all 0.2s ease-in;
+    padding : 10px;
+}
+
+.close{
+    display : none;
+}
+
+#toggle-chat-settings{
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    margin-bottom: 3px;
+    color : white;
+}
+
+.chat-setting-button:hover{
+    background-color: rgb(40,40,40);
+}
+
+#block{
+    color: red;
 }
