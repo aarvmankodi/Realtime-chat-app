@@ -30,9 +30,9 @@ export default function User({talkingTo}) {
   }; 
 
   return (
-    <div className={`user-info ${talkingTo === null ? `hide` : `nothing`}`}>
+    <div className={`user-info ${talkingTo.chatter == null ? `hide` : `nothing`}`}>
         <div className='user-icon'><FontAwesomeIcon icon={faUser}/></div>
-        <div className='user-name'>{talkingTo}</div>
+        <div className='user-name'>{talkingTo.chatter}</div>
         <button id='toggle-chat-settings' onClick={toggleMenuOpen}><FontAwesomeIcon className="plus" icon={faEllipsisVertical} /></button>
         <div ref={menuRef} className={`chat-settings ${menuOpen}`}>
           {/*Stuff we need to add here : 

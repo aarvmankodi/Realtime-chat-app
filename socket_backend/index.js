@@ -35,8 +35,8 @@ io.on("connection", (socket) => {
     socket.emit('registered', socket.userId);
   });
 
-  socket.on('join room', ({ currentUser, selectedChat }) => {
-    const room = `${currentUser}-${selectedChat}`;
+  socket.on('join room', ({ currentUser, chatter }) => {
+    const room = `${currentUser}-${chatter}`;
     socket.join(room);
     console.log(`Socket ${socket.id} joined room ${room}`);
   });

@@ -16,16 +16,20 @@ export default function Selector({ setSelectedChat }) {
     const menuRef = useRef(null);
     const navigate = useNavigate();
 
-    const handleClickOutside = (event) => {
+    const handleClickOutsideMenu = (event) => {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
             setMenuOpen('close');
+            setGrpMenuOpen('close');
         }
     };
+    
+
+    
 
     useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('mousedown', handleClickOutsideMenu);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('mousedown', handleClickOutsideMenu);
         };
     }, []);
 
@@ -49,8 +53,13 @@ export default function Selector({ setSelectedChat }) {
             const responce = await axios.get('http://localhost:3001/user/contacts' , {withCredentials : true});
             // console.log(responce.data.contacts);
             const newContacts = responce.data.contacts;
+            const newGroups = responce.data.groups;
             if ( contacts!== newContacts){
-                setContacts(newContacts);}
+                setContacts(newContacts);
+            }
+            if (groups !== newGroups){
+                setGroups(newGroups);
+            }
 
 
         }catch (e) {
@@ -80,7 +89,7 @@ export default function Selector({ setSelectedChat }) {
         console.log(grpName);
         if (grpName){
             try{
-                const res = await axios.post('http://localhost:3001/createGrp', {
+                const res = await axios.post('http://localhost:3001/user/createGrp', {
                     grpName : grpName,
                     members : []
                 }, {withCredentials : true});
@@ -96,6 +105,7 @@ export default function Selector({ setSelectedChat }) {
                 console.log(e);
             }
         }
+        document.getElementById("search-new-grp").value = "";
     }
 
     const addContact = async() => {
@@ -124,7 +134,7 @@ export default function Selector({ setSelectedChat }) {
         }
         
     }
-    const changeChat = async (key) => {
+    const changeChat = async (key , type) => {
         console.log(key);
         try{
             const responce = await axios.post('http://localhost:3001/chatsTo' , {
@@ -132,7 +142,12 @@ export default function Selector({ setSelectedChat }) {
             }, {withCredentials : true});
             console.log(responce);
             console.log("key key key" + key)
-            setSelectedChat(key);
+            let selChat = {
+                chatter : key,
+                type : type
+            }
+            console.log("sle sel " , selChat);
+            setSelectedChat(selChat);
         }catch (e){
             console.log(e);
         }
@@ -171,16 +186,15 @@ export default function Selector({ setSelectedChat }) {
             block button
           */}
           {/* <div className='chat-setting-button'>Add new user</div> */}
-          <div className='search-setting'><input type='text' id='search-new' placeholder='add user'></input>
+          <div className={`search-setting ${grpmenuOpen === 'close' ? 'open' : 'close'}`}><input type='text' id='search-new' placeholder='add user'></input>
           <button id='search-new-btn' onClick={addContact}><FontAwesomeIcon icon={faSearch}/></button></div>
-          <div className='chat-setting-button'>Delete users</div>
 
-
-          <div className='chat-setting-button' onClick={toggleGrpMenuOpen}>Create new Group</div>
           <div className={`search-setting ${grpmenuOpen}`}><input type='text' id='search-new-grp' placeholder='create Group'></input>
           <button id='search-new-btn' onClick={createGrp}><FontAwesomeIcon icon={faSearch}/></button></div>
+          <div className='chat-setting-button' onClick={toggleGrpMenuOpen}>New {grpmenuOpen === 'close' ? 'Group' : 'User'}</div>
+          
 
-
+          <div className='chat-setting-button'>Delete users</div>
           <div className='chat-setting-button'>Info</div>
           <div className='chat-setting-button' id='block' onClick={logOut}>Log Out </div>
           <div className='chat-setting-button' id='block'>Delete Account</div>
@@ -191,7 +205,7 @@ export default function Selector({ setSelectedChat }) {
                     <div className='over'>
                     <span id='users-name'>Users</span>
                     {contacts.map(contact => (
-                        <div className="user" key={contact} onClick={() => changeChat(contact)}>
+                        <div className="user" key={contact} onClick={() => changeChat(contact , 'contact')}>
                         {contact}
                         </div>
                         
@@ -201,6 +215,12 @@ export default function Selector({ setSelectedChat }) {
                 </div>
                 <div className='groups'>
                     <span id='grps-name'>Groups</span>
+                    {groups.map(group => (
+                        <div className="user" key={group} onClick={() => changeChat(group , 'group')}>
+                        {group}
+                        </div>
+                        
+                    ))}
                 </div>
             </div>
         </div>

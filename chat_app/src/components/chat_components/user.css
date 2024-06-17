@@ -29,7 +29,7 @@
     margin-left : 20px;
     font-weight: 700;
     font-size: larger;
-    margin-right : 85%;
+    /* margin-right : 85%; */
     text-transform: capitalize;
 }
 
@@ -77,6 +77,8 @@
     font-size: 20px;
     margin-bottom: 3px;
     color : white;
+    position: absolute;
+    right : 3%;
 }
 
 .chat-setting-button:hover{

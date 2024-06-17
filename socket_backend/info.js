@@ -17,9 +17,9 @@ info.use(express.json());
 info.get('/user/contacts', async (req, res) => {
     if (req.session.user){
         const RealUser = await User.findOne({email : req.session.user.email});
-        console.log("req time");
         req.session.user.contacts = RealUser.contacts;
-        res.status(200).json({ contacts: req.session.user.contacts });
+        req.session.user.groups = RealUser.groups;
+        res.status(200).json({ contacts: req.session.user.contacts , groups : req.session.user.groups});
     } else {
         
         console.log("user dont exist"); 
@@ -60,7 +60,7 @@ info.post('/user/contacts/add', async (req,res) => {
     } 
 })
 
-info.post('/createGrp' , async (req,res) => {
+info.post('/user/createGrp' , async (req,res) => {
     const grpName = req.body.grpName;
     const members = req.body.members;
     const userName = req.session.user.name;
@@ -79,7 +79,7 @@ info.post('/createGrp' , async (req,res) => {
                 
             })
             await newGrp.save();
-            user.contacts.push(grpName);
+            user.groups.push(grpName);
             await user.save();
             res.status(200).json({msg : "group created"});
         } else {

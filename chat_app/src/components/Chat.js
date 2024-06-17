@@ -22,8 +22,8 @@ export default function Chat({ selectedChat }) {
 
 
   useEffect(() => {
-    if (currentUser && selectedChat) {
-      socket.emit('join room', { currentUser, selectedChat }); 
+    if (currentUser && selectedChat != {}) {
+      socket.emit('join room', { currentUser, chatter : selectedChat.chatter }); 
       
     }
   }, [selectedChat, currentUser]);
@@ -33,8 +33,9 @@ export default function Chat({ selectedChat }) {
   useEffect(() => {
     socket.on('connect', () => {
       console.log('Connected to server');
+      console.log(selectedChat);
       if (currentUser && selectedChat) {
-        socket.emit('join room', { currentUser, selectedChat }); 
+        socket.emit('join room', { currentUser, chatter : selectedChat.chatter }); 
       }
     });
   
@@ -73,7 +74,7 @@ export default function Chat({ selectedChat }) {
       console.log("sending the parameter", selectedChat);
       axios.get('http://localhost:3001/getMsg', {
         withCredentials: true,
-        params: { chatName: selectedChat }
+        params: { chatName: selectedChat.chatter }
       })
       .then(response => {
         console.log("Response received:", response);

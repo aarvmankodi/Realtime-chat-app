@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Main() {
   const navigate = useNavigate();
-  const [selectedChat, setSelectedChat] = useState(null);
+  const [selectedChat, setSelectedChat] = useState({});
   useEffect(() => {
     const loginStatus = getCookie("loginStatus");
     if (loginStatus !== "success") {
