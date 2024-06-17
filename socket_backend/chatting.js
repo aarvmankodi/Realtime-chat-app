@@ -29,7 +29,8 @@ chatting.post('/chatsTo' , (req,res) => {
 chatting.post('/sendMsg', async (req,res) => {
     if (req.session.user.chattingTo){
         const chatsTo = req.session.user.chattingTo;
-        const messageSent = req.body.sentMsg; 
+        if (chatsTo !== 'default'){
+            const messageSent = req.body.sentMsg; 
         try{
             const newMessage = new Message({
                 chatName : chatsTo,
@@ -45,6 +46,9 @@ chatting.post('/sendMsg', async (req,res) => {
         }
     } else {
         res.status(202).json({mnessage : 'no user selected'})
+    }
+    } else {
+        res.status(203).json({mnessage : 'no user selected'})
     }
 
 })

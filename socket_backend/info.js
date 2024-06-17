@@ -30,7 +30,7 @@ info.post('/user/contacts/add', async (req,res) => {
     ;
     try
         {
-        const newUserName = req.body.newData;
+        const newUserName = req.body.newData.toLowerCase();
         const userName = req.session.user.name;
             
 

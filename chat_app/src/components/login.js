@@ -22,7 +22,6 @@ function Login() {
     }));
   };
 
-  const [contacts , setContacts] = useState([]);
 
 
   const handleLogin  = async (e) => {

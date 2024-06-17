@@ -4,12 +4,15 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'; 
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Selector({ setSelectedChat }) {
     const [contacts , setContacts] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
     const [menuOpen, setMenuOpen] = useState('close');
     const menuRef = useRef(null);
+    const navigate = useNavigate();
 
     const handleClickOutside = (event) => {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -102,6 +105,26 @@ export default function Selector({ setSelectedChat }) {
             console.log(e);
         }
     }
+
+    const logOut = async () => {
+        try{
+            const res = await axios.get('http://localhost:3001/logout' , {withCredentials : true});
+            console.log(res);
+            if (res.status === 200){
+                console.log("logged out");
+                setSelectedChat(null);
+                setCurrentUser(null);
+                setContacts([]);
+                document.cookie = "loginStatus=failed; expires=Thu, 18 Dec 2025 12:00:00 UTC; path=/";
+                navigate("/");
+                toast.success("logged out");
+            } else{
+                toast.error("couldnt log out");
+            }
+        }catch(e){
+            console.log(e);
+        }
+    }
     return (
         <div className='selector'>
             <div className='info'>
@@ -119,7 +142,7 @@ export default function Selector({ setSelectedChat }) {
           <button id='search-new-btn' onClick={addContact}><FontAwesomeIcon icon={faSearch}/></button></div>
           <div className='chat-setting-button'>Delete users</div>
           <div className='chat-setting-button'>Info</div>
-          <div className='chat-setting-button' id='block'>Log Out </div>
+          <div className='chat-setting-button' id='block' onClick={logOut}>Log Out </div>
           <div className='chat-setting-button' id='block'>Delete Account</div>
         </div>
             

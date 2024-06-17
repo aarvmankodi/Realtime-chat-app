@@ -32,7 +32,7 @@ connectToDb((err) => {
 //Sign Up route
 router.post('/signup', async (req, res) => {
     const { form, name, email, password } = req.body;
-
+    name = name.toLowerCase();
     if (form === 'users') {
         try {
             const hashedPassword = await bcrypt.hash(password, 10);
@@ -86,6 +86,21 @@ router.post('/login', async (req, res) => {
             res.status(500).json({ error: 'Internal server error' });
         }
     
+});
+
+router.get('/logout', async (req, res) => {
+    if (req.session.user) {
+        // Destroy session from memory and store
+        req.session.destroy((err) => {
+            if (err) {
+                 res.status(500).send('Failed to destroy session');
+            }
+            res.clearCookie('connect.sid'); // Default cookie name for session ID
+             res.status(200).json({message : "logged out"});
+        });
+    } else {
+        res.status(208).json({message : "session not created"});
+    }
 });
 
 

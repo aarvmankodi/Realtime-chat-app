@@ -118,7 +118,13 @@ export default function Chat({ selectedChat }) {
   const handleSendMessage = (msgs, chatTo) => { 
     console.log("Sending message:", msgs);
     console.log("selected chat", chatTo);
-    socket.emit('chat message', { chatTo, currentUser, msgs });
+    if (chatTo !== 'default'){
+      
+      socket.emit('chat message', { chatTo, currentUser, msgs });
+    } else{
+      console.log("no user selected");
+    }
+    
   };
   
   return (
