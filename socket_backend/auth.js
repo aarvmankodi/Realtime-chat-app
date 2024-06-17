@@ -4,7 +4,7 @@ const cors = require('cors');
 const { connectToDb } = require('./db-conn');
 const bcrypt = require('bcrypt');
 const mongoose = require("mongoose");
-const User = require("./person");
+const User = require("./schemas/User");
 
 const router = express.Router();
 router.use(cors({
@@ -31,7 +31,7 @@ connectToDb((err) => {
 
 //Sign Up route
 router.post('/signup', async (req, res) => {
-    const { form, name, email, password } = req.body;
+    let { form, name, email, password } = req.body;
     name = name.toLowerCase();
     if (form === 'users') {
         try {

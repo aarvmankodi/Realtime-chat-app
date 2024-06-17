@@ -9,8 +9,10 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Selector({ setSelectedChat }) {
     const [contacts , setContacts] = useState([]);
+    const [groups , setGroups] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
     const [menuOpen, setMenuOpen] = useState('close');
+    const [grpmenuOpen , setGrpMenuOpen] = useState('close');
     const menuRef = useRef(null);
     const navigate = useNavigate();
 
@@ -34,6 +36,13 @@ export default function Selector({ setSelectedChat }) {
         else
             setMenuOpen('open');
     }; 
+    const toggleGrpMenuOpen = () => {
+    
+        if ( grpmenuOpen === 'open')
+            setGrpMenuOpen('close');
+        else
+            setGrpMenuOpen('open');
+    };
 
     const fetchData = async() => {
         try{
@@ -65,7 +74,30 @@ export default function Selector({ setSelectedChat }) {
     
         getCurrentUser();
       }, []);
-      
+    
+    const createGrp = async () => {
+        let grpName = document.getElementById("search-new-grp").value;
+        console.log(grpName);
+        if (grpName){
+            try{
+                const res = await axios.post('http://localhost:3001/createGrp', {
+                    grpName : grpName,
+                    members : []
+                }, {withCredentials : true});
+                console.log(res);
+                if (res.status === 200){
+                    toast.success("group Created");
+                    fetchData();
+                }else {
+                    toast.error("group could not be created");
+                }
+
+            } catch (e){
+                console.log(e);
+            }
+        }
+    }
+
     const addContact = async() => {
         let data = document.getElementById("search-new").value;
         
@@ -125,6 +157,7 @@ export default function Selector({ setSelectedChat }) {
             console.log(e);
         }
     }
+    
     return (
         <div className='selector'>
             <div className='info'>
@@ -141,18 +174,34 @@ export default function Selector({ setSelectedChat }) {
           <div className='search-setting'><input type='text' id='search-new' placeholder='add user'></input>
           <button id='search-new-btn' onClick={addContact}><FontAwesomeIcon icon={faSearch}/></button></div>
           <div className='chat-setting-button'>Delete users</div>
+
+
+          <div className='chat-setting-button' onClick={toggleGrpMenuOpen}>Create new Group</div>
+          <div className={`search-setting ${grpmenuOpen}`}><input type='text' id='search-new-grp' placeholder='create Group'></input>
+          <button id='search-new-btn' onClick={createGrp}><FontAwesomeIcon icon={faSearch}/></button></div>
+
+
           <div className='chat-setting-button'>Info</div>
           <div className='chat-setting-button' id='block' onClick={logOut}>Log Out </div>
           <div className='chat-setting-button' id='block'>Delete Account</div>
         </div>
             
-            <div className='users'>
-                {contacts.map(contact => (
-                    <div className="user" key={contact} onClick={() => changeChat(contact)}>
-                    {contact}
+            <div className='contact-names'>
+                <div className='users'>
+                    <div className='over'>
+                    <span id='users-name'>Users</span>
+                    {contacts.map(contact => (
+                        <div className="user" key={contact} onClick={() => changeChat(contact)}>
+                        {contact}
+                        </div>
+                        
+                    ))}
                     </div>
                     
-                ))}
+                </div>
+                <div className='groups'>
+                    <span id='grps-name'>Groups</span>
+                </div>
             </div>
         </div>
         

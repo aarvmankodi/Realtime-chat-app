@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const ChatSchema = new mongoose.Schema({
+const GroupSchema = new mongoose.Schema({
     name : {
         type : String,
         required : true
@@ -12,6 +12,6 @@ const ChatSchema = new mongoose.Schema({
         default : () => Date.now()
     }
 })
-const Chat = mongoose.model("Chat" , ChatSchema)
+const Group = mongoose.model("Group" , GroupSchema)
 
-module.exports = Chat;
+module.exports = Group;

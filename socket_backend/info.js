@@ -1,8 +1,9 @@
 const express = require('express');
 const mongoose = require("mongoose");
 const cors = require('cors');
-const User = require("./person");
+const User = require("./schemas/User");
 const Message = require("./schemas/Message");
+const Group = require("./schemas/Group");
 
 
 const info = express.Router();
@@ -57,6 +58,38 @@ info.post('/user/contacts/add', async (req,res) => {
         console.error('Error adding data:', e);
         res.status(500).json({ error: 'Something went wrong' });
     } 
+})
+
+info.post('/createGrp' , async (req,res) => {
+    const grpName = req.body.grpName;
+    const members = req.body.members;
+    const userName = req.session.user.name;
+
+    const user = await User.findOne({name : 
+    userName});
+    try{
+        if (grpName && user){
+            if (!Array.isArray(members)){
+                members = members.split(' ');
+            }
+            members.push(userName);
+            const newGrp = new Group({
+                name : grpName,
+                participants : members,
+                
+            })
+            await newGrp.save();
+            user.contacts.push(grpName);
+            await user.save();
+            res.status(200).json({msg : "group created"});
+        } else {
+            
+            res.status(208).json({msg : "incorrect creds"});
+        }
+    }catch(e){
+        res.status(218).json({msg : "an error occured"});
+        console.log(e);
+    }
 })
 
 info.get('/getCurrentUser', (req, res) => {
