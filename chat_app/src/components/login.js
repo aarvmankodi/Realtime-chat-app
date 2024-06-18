@@ -36,7 +36,7 @@ function Login() {
           console.log(response.data);
           // document.cookie = "ChattingTo=abc; expires=Thu, 18 Dec 2025 12:00:00 UTC; path=/";
           navigate("/chats", {state : {user : formData.name}});
-          toast.success("loggeed in")
+          window.location.reload();
         } else  {
           toast.error('User not Found');
         }

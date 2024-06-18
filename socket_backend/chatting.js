@@ -54,7 +54,7 @@ chatting.post('/sendMsg', async (req,res) => {
 })
 
 chatting.get('/getMsg' , async (req,res) => { 
-    if (req.session.user.chattingTo != 'default'){
+    if (req.session.user && req.session.user.chattingTo != 'default'){
         const chatsTo = req.session.user.chattingTo;
         const user = req.session.user.name;
         const param = req.query.chatName;

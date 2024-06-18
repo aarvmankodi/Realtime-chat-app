@@ -21,12 +21,12 @@ const io = socketIo(server, {
 
 app.use(cors({
   origin: "http://localhost:3000"   
-}));
+})); 
 
 io.use(wrap(sessionMiddleWare));
-
+ 
 io.on("connection", (socket) => {
-  console.log('New connection, session ID:', socket.request.sessionID);
+  console.log('New connection, session ID:', socket.request.sessionID);  
 
   socket.on('registerSocket', async () => {
     const db = getDb();
