@@ -19,7 +19,18 @@ export default function Chat({ selectedChat }) {
   const [currentUser, setCurrentUser] = useState(null);
   const chatContainerRef = useRef(null);
 
+  function linkify(text) {
+    const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+    const wwwPattern = /(^|\s)(www\.[\S]+(\b|$))/gi;
+    const noSchemePattern = /(^|\s)([A-Z0-9.-]+\.[A-Z]{2,}\b(?!@))/gi;
+  
+    return text
+      .replace(urlPattern, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`)
+      .replace(wwwPattern, (match, prefix, url) => `${prefix}<a href="http://${url}" target="_blank" rel="noopener noreferrer">${url}</a>`)
+      .replace(noSchemePattern, (match, prefix, url) => `${prefix}<a href="http://${url}" target="_blank" rel="noopener noreferrer">${url}</a>`);
+  }
 
+  
 
   useEffect(() => {
     if (currentUser && selectedChat != {}) {
@@ -47,7 +58,7 @@ export default function Chat({ selectedChat }) {
       console.log("Received message: ????", msg);
       msg.msgs.forEach(message => {
         setMessages((prevMessages) => [...prevMessages ,{
-          text : message.message,
+          text : linkify(message.message) ,
           sender : message.sender
         }])
       })
@@ -135,7 +146,11 @@ export default function Chat({ selectedChat }) {
       <ul className='list'>
         {messages.map((msg, index) => (
           <div className='chat-messages'>
-            <li key={index}  className={`${msg.sender === currentUser ? 'self' : 'other'}`}>{msg.text}</li>
+            
+            <li 
+                className={`${msg.sender === currentUser ? 'self' : 'other'}`} 
+                dangerouslySetInnerHTML={{ __html: msg.text }}
+              ></li>
            <li key={index+100}className={`sender ${msg.sender === currentUser ? 'self-user' : 'other-user'}`}>
            {msg.sender === currentUser ? 'you' : msg.sender}
             </li>

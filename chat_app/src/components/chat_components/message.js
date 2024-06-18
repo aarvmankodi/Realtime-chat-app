@@ -1,14 +1,33 @@
-import React , {useState , useEffect} from 'react'
+import React , {useState , useRef , useEffect} from 'react'
 import './message.css';
 import axios from 'axios';
 import { toast } from 'react-toastify'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { faPaperPlane , faFaceSmile} from '@fortawesome/free-regular-svg-icons'
+import  Picker  from '@emoji-mart/react';
+import data from '@emoji-mart/data';
 
 
 
 export default function Message( {onSendMessage}) {
   const [message, setMessage] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const menuRef = useRef(null);
+  
+
+  const handleClickOutsideMenu = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowEmojiPicker(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutsideMenu);
+    return () => {
+        document.removeEventListener('mousedown', handleClickOutsideMenu);
+    };
+  }, []);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +49,10 @@ export default function Message( {onSendMessage}) {
     setMessage('');
   };
  
-    
+  const handleEmojiSelect = (emoji) => {
+    setMessage((prevMessage) => prevMessage + emoji.native);
+    // setShowEmojiPicker(false);
+  };
     
      
     
@@ -39,9 +61,13 @@ export default function Message( {onSendMessage}) {
 
   return (
     <div className='message'>
-        <input value = {message} onChange={(e) => setMessage(e.target.value)} className='messagebox' name='message' placeholder='whats on your mind?'/>
-
-        <button className='send' onClick={handleSubmit}><FontAwesomeIcon icon={faPaperPlane}/></button>        
+        <input value = {message} onChange={(e) => setMessage(e.target.value)} className='messagebox' name='message' placeholder={`whats on your mind?`}/>
+        <button className='send' onClick={() => setShowEmojiPicker(!showEmojiPicker)}><FontAwesomeIcon icon={faFaceSmile}/></button>
+        <button className='send' onClick={handleSubmit}><FontAwesomeIcon icon={faPaperPlane}/></button> 
+        <div className={showEmojiPicker?'emoji' : 'd-none'} ref={menuRef}> <Picker data={data}
+        onEmojiSelect={
+          handleEmojiSelect
+        }/></div>       
     </div>
   )
 }
