@@ -99,4 +99,58 @@ info.get('/getCurrentUser', (req, res) => {
       res.status(401).send('User not authenticated');
     }
   });
+
+info.post('/addUserToGrp', async (req,res) => {
+        
+    try {
+        if (req.session.user){    
+            const user = req.body.user;
+            const talkingTo = req.body.talkingTo;
+            console.log(user);
+            console.log(talkingTo);
+            if (talkingTo.type != 'group'){
+                res.status(404).json({err : "not a group"});
+            } else {
+                const userInDb = await User.findOne({name : user});
+                const grpName = await Group.findOne({name : talkingTo.chatter});
+                if (!userInDb || !grpName){
+                    res.status(210).json({message : "User or Group not found"});
+                }
+                else {
+                    const userinGrp = await Group.findOne({
+                        name : talkingTo.chatter , 
+                        participants: { $elemMatch: { $eq: user }}
+                    })
+                    if (userinGrp){
+                        res.status(218).json({message : "User already added"});
+                    } else {
+                        userInDb.groups.push(talkingTo.chatter);
+                        await userInDb.save();
+                        grpName.participants.push(user);
+                        await grpName.save();
+                        res.status(200).json({message : "User added" , members : grpName.participants});
+                    }
+                
+                }
+                
+            }}
+       
+    } catch(e){
+        console.log("the error when adding user to group is " , e);
+        res.status(400).json({err : "an error occured in server"}); 
+    }
+
+})
+
+info.get('/grpMem' , async (req,res) => {
+    const grpName = req.query.chatter;
+    try {
+        const grp = await Group.findOne({name : grpName});
+        if (grp){
+            res.status(200).json({members : grp.participants});
+        }
+    }catch(e){
+        console.log(e)
+    }
+})
 module.exports = info;

@@ -62,7 +62,8 @@ chatting.get('/getMsg' , async (req,res) => {
             const chats = await Message.find({
                 $or: [
                    { $and : [{chatName : user}, {sender : chatsTo}]},  
-                   { $and : [{chatName : chatsTo}, {sender : user}]}
+                   { $and : [{chatName : chatsTo}, {sender : user}]},
+                   {chatName : chatsTo} ,
                 ]
               })
                 console.log("///////" , chats);
