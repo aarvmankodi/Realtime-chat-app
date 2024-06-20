@@ -74,6 +74,29 @@ export default function User({talkingTo}) {
       }
     }
 
+    const getMembers = async () => {
+      try{
+        let response = await axios.get('http://localhost:3001/getMembers' , 
+          {
+            params : {
+              chattingTo : talkingTo.chatter
+            },
+            withCredentials : true,
+          });
+          console.log(response);
+          if (response.status === 200){
+            console.log(response.data.name);
+            console.log(response.data.email);
+            console.log("success");
+          }else {
+            console.log("failure");
+          }
+
+      } catch(e){
+        console.log(e);
+      }
+    }
+
     const toggleMenuOpen = () => {
     
         if ( menuOpen === 'open')
@@ -89,7 +112,7 @@ export default function User({talkingTo}) {
           <button id='toggle-chat-settings' onClick={toggleMenuOpen}><FontAwesomeIcon className="plus" icon={faEllipsisVertical} /></button>
           <div ref={menuRef} className={`chat-settings ${menuOpen}`}>
             <div className='chat-setting-button'>Delete Chats</div>
-            <div className='chat-setting-button' onClick={getGrpMem}>Info</div>
+            <div className='chat-setting-button' onClick={getMembers}>Info</div>
             <div className='chat-setting-button' id='block'>Block </div>
             <div className={`chat-setting-button ${talkingTo.type == 'contact' ? 'hide' : 'nothing'}`} onClick={addUserToGrp}>Add Users</div>
             
