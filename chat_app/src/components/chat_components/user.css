@@ -137,3 +137,23 @@
 .grp-info{
     display: block;
 }
+
+.search-setting{
+    margin-top : 5px;
+    margin-bottom: 5px;
+    margin-right: 10%;
+    margin-left: 5%;
+    padding-top : 10px;
+    padding-bottom : 10px;
+    
+}
+
+#search-new-user-grp{
+    width : 85%;
+    background-color: rgb(40,40,40);
+    border-radius: 20px;
+    margin-left : 5px;
+    padding-left: 10px;
+    height : 30px;
+    font-size: 15px;
+}

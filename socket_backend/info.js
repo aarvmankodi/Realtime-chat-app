@@ -67,7 +67,17 @@ info.post('/user/createGrp' , async (req,res) => {
 
     const user = await User.findOne({name : 
     userName});
+    const grp = await Group.findOne({name : grpName});
     try{
+        if (grp){
+            await Group.updateOne(
+                {name : grpName} , 
+                {$push : {participants : userName}}
+            )
+            user.groups.push(grpName);
+            await user.save();
+            res.status(200).json({msg : "group added"});
+        } else {
         if (grpName && user){
             if (!Array.isArray(members)){
                 members = members.split(' ');
@@ -86,6 +96,7 @@ info.post('/user/createGrp' , async (req,res) => {
             
             res.status(208).json({msg : "incorrect creds"});
         }
+    }
     }catch(e){
         res.status(218).json({msg : "an error occured"});
         console.log(e);
@@ -125,6 +136,7 @@ info.post('/addUserToGrp', async (req,res) => {
                 const userInDb = await User.findOne({name : user});
                 const grpName = await Group.findOne({name : talkingTo.chatter});
                 if (!userInDb || !grpName){
+                    console.log(userInDb , "fff" , grpName)
                     res.status(210).json({message : "User or Group not found"});
                 }
                 else {
@@ -174,12 +186,17 @@ info.post('/removeUser' , async (req,res) => {
             }
         } else if (talkingTo.type == 'group'){
             const db = await User.findOne({name : user});
-            if (db){
+            const grp = await Group.findOne({name : talkingTo.chatter});
+            if (db && grp){
                 console.log('ggggggg' , db);
                 await User.updateOne(
                     {name : user},
                     {$pull : {groups : talkingTo.chatter}}
                 );
+                await Group.updateOne(
+                    {name : talkingTo.chatter} , 
+                    {$pull : {participants : req.session.user.name}}
+                )
                 const updatedGroup = await User.findOne({ name: user });
                 console.log('Updated Group:', updatedGroup);
 
