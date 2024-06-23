@@ -2,7 +2,7 @@ import React, { useEffect , useState , useRef } from 'react';
 import './selector.css';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faSearch, faUser } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'; 
 import { useNavigate } from 'react-router-dom';
 
@@ -14,7 +14,10 @@ export default function Selector({ setSelectedChat }) {
     const [menuOpen, setMenuOpen] = useState('close');
     const [grpmenuOpen , setGrpMenuOpen] = useState('close');
     const menuRef = useRef(null);
+    const [infoMenu , setInfoMenu] = useState('close');
+    const [email, setEmail] = useState('');
     const navigate = useNavigate();
+    const infoRef = useRef(null);
 
     const handleClickOutsideMenu = (event) => {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -23,7 +26,26 @@ export default function Selector({ setSelectedChat }) {
         }
     };
     
+    const handleClickOutsideInfo = (event) => {
+        if (infoRef.current && !infoRef.current.contains(event.target)) {
+            setInfoMenu('close');
+        }
+    };
 
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutsideInfo);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutsideInfo);
+        };
+    }, []);
+
+    const toggleInfoMenuOpen = () => {
+    
+        if ( infoMenu === 'open')
+            setInfoMenu('close');
+        else
+            setInfoMenu('open');
+    };
     
 
     useEffect(() => {
@@ -205,6 +227,24 @@ export default function Selector({ setSelectedChat }) {
             console.log(e);
         }
     }
+    const getInfo = async () => {
+        try{
+        const res = await axios.get("http://localhost:3001/getUserInfo" , 
+            {withCredentials : true }
+        );
+        console.log(res);
+        if (res.status == 200){
+            
+            setEmail(res.data.email);
+            toggleInfoMenuOpen();
+        }
+        } 
+        
+        catch(e){
+          console.log(e)
+        }
+        
+      }
     
     return (
         <div className='selector'>
@@ -223,9 +263,21 @@ export default function Selector({ setSelectedChat }) {
           
 
           <div className='chat-setting-button'>Delete users</div>
-          <div className='chat-setting-button'>Info</div>
+          <div className='chat-setting-button' onClick={getInfo}>Info</div>
           <div className='chat-setting-button' id='block' onClick={logOut}>Log Out </div>
           <div className='chat-setting-button' id='block' onClick={deleteAccount}>Delete Account</div>
+
+
+          {/* User info */}
+          <div ref={infoRef}className={` chat-settings-user ${infoMenu}`}>  
+          <div className={`user-info-icon-container`}>
+          <div className={`user-info-icon`}><FontAwesomeIcon icon={faUser}/></div>
+          </div>
+    
+          <div className='user-name-info'>{currentUser}</div>
+          <div className={`user-email-info`}>{email}</div>
+          
+          </div>
         </div>
             
             <div className='contact-names'>

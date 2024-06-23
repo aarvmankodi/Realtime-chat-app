@@ -122,6 +122,14 @@ info.get('/getInfo', async (req, res) => {
     
   })
 
+  info.get('/getUserInfo', async (req, res) => {
+ 
+        res.status(200).json({email : req.session.user.email});
+    
+      
+    
+  })
+
 info.post('/addUserToGrp', async (req,res) => {
         
     try {
