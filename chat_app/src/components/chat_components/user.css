@@ -88,3 +88,47 @@
 #block{
     color: red;
 }
+
+.info-area{
+    width : 30vw;
+    height : 50vh;
+    position : absolute;
+    /* top : 5%;
+    left : 30%; */
+    transform: translateX(6px);
+    flex-direction: column; 
+    gap : 5px;
+    padding-bottom : 20vh;
+    
+}
+
+.user-info-icon{
+    width : 6vw;
+    height : 11vh;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 35px;
+    margin-bottom: 20px;
+    background-color: orange;
+    color : black;
+}
+
+.user-info-icon-container{
+    width : 100%;
+    text-align: center;
+}
+
+.user-name-info{
+    font-weight: 700;
+    font-size : 30px;
+    
+    text-transform:capitalize;
+}
+
+.user-email-info{
+    font-weight: 500;
+    font-size : 20px;
+    
+}
