@@ -164,6 +164,7 @@ h3{
 .over{
     overflow: scroll;
     max-height: 40vh;
+    overflow-x : hidden
 }
 
 #users-name  {
