@@ -1,7 +1,7 @@
 import React , {useState , useRef , useEffect}from 'react'
 import './user.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisVertical, faUser, faBan} from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisVertical, faUser, faUserGroup} from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -72,46 +72,45 @@ export default function User({talkingTo , User}) {
         toast.error("some error occured");
       }
     }
-
-    const getGrpMem = async () => {
+    const getInfo = async () => {
       try{
-        let response = await axios.get('http://localhost:3001/grpMem' , 
-          { params : {
-            chatter : talkingTo.chatter} , 
-          withCredentials : true});
-        console.log(response.data.members);
-        if (response.status === 200){
-          setGrpMem(response.data.members);
-          console.log("gg" , grpMem);
-        }
-      }catch(e){
-        console.log(e);
-      }
-    }
-
-    const getMembers = async () => {
-      try{
-        let response = await axios.get('http://localhost:3001/getMembers' , 
-          {
-            params : {
-              chattingTo : talkingTo.chatter
-            },
-            withCredentials : true,
-          });
-          console.log(response);
-          if (response.status === 200){
-            console.log(response.data.name);
-            console.log(response.data.email);
-            console.log("success");
+        if (talkingTo.type == 'contact'){
+        
+          const res = await axios.get("http://localhost:3001/getInfo" , 
+            {withCredentials : true ,
+              params : {
+                user : talkingTo
+              }
+            }
+          );
+          console.log(res);
+          if (res.status == 200){
             
-          }else {
-            console.log("failure");
+            setEmail(res.data.email);
+            toggleInfoMenuOpen();
           }
+        } else if (talkingTo.type == 'group'){
+          let response = await axios.get('http://localhost:3001/grpMem' , 
+            { params : {
+              chatter : talkingTo.chatter} , 
+            withCredentials : true});
+          console.log(response.data.members);
 
-      } catch(e){
-        console.log(e);
+
+          if (response.status === 200){
+            setGrpMem(response.data.members);
+            console.log("gg" , grpMem);
+            toggleInfoMenuOpen();
+          }
+        }
       }
+      catch(e){
+        console.log(e)
+      }
+      
     }
+   
+    
     const toggleInfoMenuOpen = () => {
     
       if ( infoMenu === 'open')
@@ -150,45 +149,37 @@ export default function User({talkingTo , User}) {
         }
       } 
     }
-    const getInfo = async () => {
-      try{
-        const res = await axios.get("http://localhost:3001/getInfo" , 
-          {withCredentials : true ,
-            params : {
-              user : talkingTo
-            }
-          }
-        );
-        console.log(res);
-        if (res.status == 200){
-          
-          setEmail(res.data.email);
-          toggleInfoMenuOpen();
-        }
-      }catch(e){
-        console.log(e)
-      }
-    }
+    
 
     return (
       <div className={`user-info ${talkingTo.chatter == null ? 'hide' : 'nothing'}`}>
-          <div className='user-icon'><FontAwesomeIcon icon={faUser}/></div>
+          <div className={`user-icon ${talkingTo.type == 'group' ? 'hide' : 'nothing'}`}><FontAwesomeIcon icon={faUser}/></div>
+          <div className={`user-icon ${talkingTo.type == 'contact' ? 'hide' : 'nothing'}`}><FontAwesomeIcon icon={faUserGroup}/></div>
           <div className='user-name'>{talkingTo.chatter}</div>
-          <button id='toggle-chat-settings' onClick={toggleMenuOpen}><FontAwesomeIcon className="plus" icon={faEllipsisVertical} /></button>
+          <button id='toggle-chat-settings' onClick={toggleMenuOpen}><FontAwesomeIcon className="plus" 
+          
+           icon={faEllipsisVertical} /></button>
           <div ref={menuRef} className={`chat-settings ${menuOpen}`}>
             <div className='chat-setting-button' onClick={getInfo}>Info</div>
             <div className='chat-setting-button' id='block' onClick={removeUser}>Remove </div>
             <div className={`chat-setting-button ${talkingTo.type == 'contact' ? 'hide' : 'nothing'}`} onClick={addUserToGrp}>Add Users</div>
           </div>
 
-          <div ref={infoRef}className={`info-area chat-settings ${infoMenu}`}>
-          <div className='user-info-icon-container'>
-            <div className='user-info-icon'><FontAwesomeIcon icon={faUser}/></div>
+          <div ref={infoRef}className={`info-area chat-settings ${infoMenu}`}>  
+          <div className={`user-info-icon-container  ${talkingTo.type == 'group' ? 'hide' : 'nothing'}`}>
+          <div className={`user-info-icon`}><FontAwesomeIcon icon={faUser}/></div>
+          
+          </div>
+          <div className={`user-info-icon-container  ${talkingTo.type == 'contact' ? 'hide' : 'nothing'}`}>
+          <div className={`user-info-icon`}><FontAwesomeIcon icon={faUserGroup}/></div>
+          
           </div>
           
           
+          
           <div className='user-name-info'>{talkingTo.chatter}</div>
-          <div className='user-email-info'>aarvmankodi06@gmail.com</div>
+          <div className={`user-email-info ${talkingTo.type == 'group' ? 'hide' : 'nothing'}`} >{email}</div>
+          
           </div>
       </div>
     )

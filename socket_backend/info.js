@@ -203,22 +203,5 @@ info.get('/grpMem' , async (req,res) => {
     }
 })
 
-info.get('/getMembers' , async (req,res) => {
-    const sentName = req.query.chattingTo;
 
-    const userFound = await User.findOne({name : sentName});
-
-    if (userFound != null){
-        const userEmail = userFound.email;
-        res.status(200).json({
-            message : "User was found. Here are the details",
-            name : sentName,
-            email : userEmail
-        });
-    } else {
-        res.status(400).json({
-            message : "User not found in db"
-        });
-    }
-})
 module.exports = info;
