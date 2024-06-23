@@ -104,6 +104,21 @@ router.get('/logout', async (req, res) => {
     }
 });
 
+router.post('/delAcc' , async (req,res) => {
+    const username = req.body.currentUser;
+    console.log("ddd" , req.session.user , username);
+    if (req.session.user && req.session.user.name === username){
+        console.log("lll");
+        const user = await User.deleteOne({name : username});
+
+        if (user){
+            res.status(200).json({message : "user remove from database"});
+        } else {
+            res.status(218).json({message : "user could not be deleted"});
+        }
+    }
+})
+
 
 
 module.exports = router;

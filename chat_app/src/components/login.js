@@ -31,10 +31,8 @@ function Login() {
       try {
         const response = await axios.post('http://localhost:3001/login', formData , {withCredentials : true});
         if (response.status === 200) {
-          // If login is successful, display a success message to the user
           document.cookie = "loginStatus=success; expires=Thu, 18 Dec 2025 12:00:00 UTC; path=/";
           console.log(response.data);
-          // document.cookie = "ChattingTo=abc; expires=Thu, 18 Dec 2025 12:00:00 UTC; path=/";
           navigate("/chats", {state : {user : formData.name}});
           window.location.reload();
         } else  {

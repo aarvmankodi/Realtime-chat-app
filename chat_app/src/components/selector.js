@@ -172,6 +172,39 @@ export default function Selector({ setSelectedChat }) {
             console.log(e);
         }
     }
+
+    
+
+    const deleteAccount = async () => {
+        try{
+            let decision = window.confirm("Do you want to delete your account?");
+            if (decision){
+                const res = await axios.post('http://localhost:3001/delAcc',{currentUser : currentUser}, { withCredentials : true});
+            console.log(res);
+            if (res.status === 200){
+                console.log("account has been deleted");
+                const res = await axios.get('http://localhost:3001/logout' , {withCredentials : true});
+            console.log(res);
+            if (res.status === 200){
+                console.log("account deleted");
+                setSelectedChat(null);
+                setCurrentUser(null);
+                setContacts([]);
+                document.cookie = "loginStatus=failed; expires=Thu, 18 Dec 2025 12:00:00 UTC; path=/";
+                navigate("/");
+                toast.success("Account deleted");
+            } else{
+                toast.error("couldnt log out"); 
+            }
+            } else {
+                toast.error("account could not be deleted");
+            }
+            }
+            
+        } catch (e){
+            console.log(e);
+        }
+    }
     
     return (
         <div className='selector'>
@@ -180,12 +213,7 @@ export default function Selector({ setSelectedChat }) {
             <button id='addContact' onClick={toggleMenuOpen}><FontAwesomeIcon className="plus" icon={faBars}/></button>
             </div>
             <div  ref={menuRef} className={`user-settings ${menuOpen}`} >
-          {/*Stuff we need to add here : 
-            Remove Chats button
-            User info button
-            block button
-          */}
-          {/* <div className='chat-setting-button'>Add new user</div> */}
+          
           <div className={`search-setting ${grpmenuOpen === 'close' ? 'open' : 'close'}`}><input type='text' id='search-new' placeholder='add user'></input>
           <button id='search-new-btn' onClick={addContact}><FontAwesomeIcon icon={faSearch}/></button></div>
 
@@ -197,7 +225,7 @@ export default function Selector({ setSelectedChat }) {
           <div className='chat-setting-button'>Delete users</div>
           <div className='chat-setting-button'>Info</div>
           <div className='chat-setting-button' id='block' onClick={logOut}>Log Out </div>
-          <div className='chat-setting-button' id='block'>Delete Account</div>
+          <div className='chat-setting-button' id='block' onClick={deleteAccount}>Delete Account</div>
         </div>
             
             <div className='contact-names'>
