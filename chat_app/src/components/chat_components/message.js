@@ -13,6 +13,8 @@ export default function Message( {onSendMessage}) {
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const menuRef = useRef(null);
+  const inputRef = useRef(null);
+  const buttonRef = useRef(null);
   
 
   const handleClickOutsideMenu = (event) => {
@@ -28,7 +30,27 @@ export default function Message( {onSendMessage}) {
     };
   }, []);
 
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        if (buttonRef.current) {
+          buttonRef.current.click(); 
+        }
+      }
+    };
 
+    const inputElement = inputRef.current;
+    if (inputElement) {
+      inputElement.addEventListener('keypress', handleKeyPress);
+    }
+
+    return () => {
+      if (inputElement) {
+        inputElement.removeEventListener('keypress', handleKeyPress);
+      }
+    };
+  }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try{
@@ -61,9 +83,9 @@ export default function Message( {onSendMessage}) {
 
   return (
     <div className='message'>
-        <input value = {message} onChange={(e) => setMessage(e.target.value)} className='messagebox' name='message' placeholder={`whats on your mind?`}/>
+        <input value = {message} onChange={(e) => setMessage(e.target.value)} ref={inputRef} className='messagebox' name='message' placeholder={`whats on your mind?`}/>
         <button className='send' onClick={() => setShowEmojiPicker(!showEmojiPicker)}><FontAwesomeIcon icon={faFaceSmile}/></button>
-        <button className='send' onClick={handleSubmit}><FontAwesomeIcon icon={faPaperPlane}/></button> 
+        <button className='send' ref={buttonRef} onClick={handleSubmit}><FontAwesomeIcon icon={faPaperPlane}/></button> 
         <div className={showEmojiPicker?'emoji' : 'd-none'} ref={menuRef}> <Picker data={data}
         onEmojiSelect={
           handleEmojiSelect

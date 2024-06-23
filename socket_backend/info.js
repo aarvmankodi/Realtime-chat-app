@@ -70,13 +70,23 @@ info.post('/user/createGrp' , async (req,res) => {
     const grp = await Group.findOne({name : grpName});
     try{
         if (grp){
-            await Group.updateOne(
-                {name : grpName} , 
-                {$push : {participants : userName}}
-            )
-            user.groups.push(grpName);
-            await user.save();
-            res.status(200).json({msg : "group added"});
+            if (!grp.participants.includes(userName)){
+                await Group.updateOne(
+                    {name : grpName} , 
+                    {$push : {participants : userName}}
+                )   
+            }
+            
+            console.log("qqqwwweerrttyy" , user.groups);
+            if (user.groups.includes(grpName)){
+                res.status(210).json({msg : "group already added"});
+            } else {
+                
+                user.groups.push(grpName);
+                await user.save();
+            res.status(210).json({msg : "group added"});
+            }
+            
         } else {
         if (grpName && user){
             if (!Array.isArray(members)){

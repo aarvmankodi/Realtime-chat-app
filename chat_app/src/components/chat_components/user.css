@@ -90,15 +90,18 @@
 }
 
 .info-area{
-    width : 30vw;
-    height : 50vh;
+    width : auto;
+    min-width: 20vw;
+    height : auto;
+    overflow : auto;
     position : absolute;
+    padding-top : 1%;
     /* top : 5%;
     left : 30%; */
     transform: translateX(6px);
     flex-direction: column; 
     gap : 5px;
-    padding-bottom : 20vh;
+    padding-bottom: 2vh;
     
 }
 
@@ -128,7 +131,7 @@
 }
 
 .user-email-info{
-    font-weight: 500;
+    font-weight: 700;
     font-size : 20px;
     
     
@@ -156,4 +159,13 @@
     padding-left: 10px;
     height : 30px;
     font-size: 15px;
+}
+
+.grp-members{
+    text-transform: capitalize;
+    /* padding-top : 5px; */
+    padding : 0px;
+    margin: 0px;
+    padding-top: 5px;
+    
 }

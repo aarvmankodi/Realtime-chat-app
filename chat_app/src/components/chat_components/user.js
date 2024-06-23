@@ -18,6 +18,7 @@ export default function User({talkingTo , User}) {
     const handleClickOutside = (event) => {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
             setMenuOpen('close');
+            setGrpMenuOpen('close')
         }
     };
     const handleClickOutsideInfo = (event) => {
@@ -125,6 +126,7 @@ export default function User({talkingTo , User}) {
     
         if ( menuOpen === 'open')
             setMenuOpen('close');
+          
         else
             setMenuOpen('open');
     }; 
@@ -193,6 +195,11 @@ export default function User({talkingTo , User}) {
           
           <div className='user-name-info'>{talkingTo.chatter}</div>
           <div className={`user-email-info ${talkingTo.type == 'group' ? 'hide' : 'nothing'}`} >{email}</div>
+          <div className={`user-email-info ${talkingTo.type == 'contact' ? 'hide' : 'nothing'}`} >Members : 
+            {grpMem.map(member => (
+              <p key={member} className='grp-members'>{member}</p>
+            ))}
+          </div>
           
           </div>
       </div>

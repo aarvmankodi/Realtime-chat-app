@@ -18,6 +18,7 @@ export default function Selector({ setSelectedChat }) {
     const [email, setEmail] = useState('');
     const navigate = useNavigate();
     const infoRef = useRef(null);
+    
 
     const handleClickOutsideMenu = (event) => {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -70,6 +71,8 @@ export default function Selector({ setSelectedChat }) {
             setGrpMenuOpen('open');
     };
 
+    
+
     const fetchData = async() => {
         try{
             const responce = await axios.get('http://localhost:3001/user/contacts' , {withCredentials : true});
@@ -119,7 +122,10 @@ export default function Selector({ setSelectedChat }) {
                 if (res.status === 200){
                     toast.success("group Created");
                     fetchData();
-                }else {
+                }else if (res.status === 210){
+                    toast("group already exists");
+                }
+                else{
                     toast.error("group could not be created");
                 }
 
@@ -254,15 +260,14 @@ export default function Selector({ setSelectedChat }) {
             </div>
             <div  ref={menuRef} className={`user-settings ${menuOpen}`} >
           
-          <div className={`search-setting ${grpmenuOpen === 'close' ? 'open' : 'close'}`}><input type='text' id='search-new' placeholder='add user'></input>
-          <button id='search-new-btn' onClick={addContact}><FontAwesomeIcon icon={faSearch}/></button></div>
+          <div className={`search-setting ${grpmenuOpen === 'close' ? 'open' : 'close'}`}><input  type='text' id='search-new' placeholder='add user'></input>
+          <button id='search-new-btn'  onClick={addContact}><FontAwesomeIcon icon={faSearch}/></button></div>
 
-          <div className={`search-setting ${grpmenuOpen}`}><input type='text' id='search-new-grp' placeholder='create Group'></input>
-          <button id='search-new-btn' onClick={createGrp}><FontAwesomeIcon icon={faSearch}/></button></div>
+          <div className={`search-setting ${grpmenuOpen}`}><input  type='text' id='search-new-grp' placeholder='create Group'></input>
+          <button id='search-new-btn'   onClick={createGrp}><FontAwesomeIcon icon={faSearch}/></button></div>
           <div className='chat-setting-button' onClick={toggleGrpMenuOpen}>New {grpmenuOpen === 'close' ? 'Group' : 'User'}</div>
           
 
-          <div className='chat-setting-button'>Delete users</div>
           <div className='chat-setting-button' onClick={getInfo}>Info</div>
           <div className='chat-setting-button' id='block' onClick={logOut}>Log Out </div>
           <div className='chat-setting-button' id='block' onClick={deleteAccount}>Delete Account</div>
